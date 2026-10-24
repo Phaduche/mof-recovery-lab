@@ -1,0 +1,8 @@
+streamlit==1.66.0
+pandas==2.2.3
+numpy==2.3.5
+scikit-learn==1.8.0
+plotly==6.9.0
+pyarrow==26.0.0
+joblib==1.6.0
+gemmi==0.7.5

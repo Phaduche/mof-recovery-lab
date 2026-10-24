@@ -1,0 +1,50 @@
+[
+ {
+  "source_id": "arc",
+  "name": "ARC-MOF geometric properties",
+  "url": "https://zenodo.org/records/16802743",
+  "version": "16802743",
+  "license": "CC BY 4.0",
+  "records": 500
+ },
+ {
+  "source_id": "core2019",
+  "name": "CoRE MOF 2019 (public ASR)",
+  "url": "https://zenodo.org/records/3370144",
+  "version": "3370144",
+  "license": "CC BY 4.0",
+  "records": 12020
+ },
+ {
+  "source_id": "core2025",
+  "name": "CoRE MOF 2025 (public CR)",
+  "url": "https://zenodo.org/records/15621349",
+  "version": "15621349",
+  "license": "CC BY 4.0",
+  "records": 2737
+ },
+ {
+  "source_id": "mofsimplify",
+  "name": "MOFSimplify water labels",
+  "url": "https://github.com/hjkgrp/MOFSimplify",
+  "version": "5693968b3e9b9e26eab3bdb1db908ae2877d4bb7",
+  "license": "MIT repository; cite original datasets",
+  "records": 1092
+ },
+ {
+  "source_id": "qmof",
+  "name": "QMOF Database",
+  "url": "https://figshare.com/articles/dataset/QMOF_Database/13147324",
+  "version": "file-59573735",
+  "license": "CC BY 4.0",
+  "records": 20372
+ },
+ {
+  "source_id": "ultrastable",
+  "name": "Ultrastable MOF building blocks",
+  "url": "https://zenodo.org/records/7666081",
+  "version": "7666081",
+  "license": "CC BY 4.0",
+  "records": 136
+ }
+]
