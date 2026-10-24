@@ -1,0 +1,47 @@
+[
+  {
+    "id": "uio66-nh2",
+    "name": "UiO-66-NH2",
+    "role": "주 후보",
+    "metal": "Zr",
+    "node": "Zr6O4(OH)4 클러스터",
+    "linker": "2-아미노테레프탈산 (BDC-NH2)",
+    "cif": "UiO66NH2_WS14s.cif",
+    "cif_source": "Zenodo 12110918 (WS14s 기준 구조, primitive cell)",
+    "descriptors": "UiO66NH2_WS14s_descriptors_water.csv",
+    "mofsimplify_score": 0.77,
+    "mofsimplify_status": "water-stable (MIT MOFSimplify 공식 API, 2026-10-08)",
+    "rationale": "Zr–OH 결함 자리에서 인산염과 리간드 교환(Zr–O–P)이 일어날 수 있고, 아미노기가 산성 조건에서 양성자화되어 음이온인 인산염을 정전기적으로 끌어당긴다는 문헌 가설이 있습니다. 같은 기준 구조 세트에서 UiO-66과 비교하기 좋습니다.",
+    "check_next": "정인산염 모사용액 흡착 등온선, pH 의존성, NaOH 등 탈착액에서 구조 유지(PXRD)와 Zr 용출 확인"
+  },
+  {
+    "id": "uio66",
+    "name": "UiO-66",
+    "role": "기준 재료",
+    "metal": "Zr",
+    "node": "Zr6O4(OH)4 클러스터",
+    "linker": "테레프탈산 (BDC)",
+    "cif": "UiO66_WS14s.cif",
+    "cif_source": "Zenodo 12110918 (WS14s 기준 구조, primitive cell)",
+    "descriptors": "UiO66_WS14s_descriptors_water.csv",
+    "mofsimplify_score": 0.87,
+    "mofsimplify_status": "water-stable (MIT MOFSimplify 공식 API, 2026-10-08)",
+    "rationale": "물 안정성이 잘 알려진 Zr 기반 MOF입니다. 작용기가 없는 기준 재료로 두고 -NH2 개질의 효과를 비교합니다.",
+    "check_next": "UiO-66-NH2와 같은 프로토콜(농도·pH·투입량·시간)로 포집·탈착·재사용 비교"
+  },
+  {
+    "id": "mil100fe",
+    "name": "MIL-100(Fe)",
+    "role": "예비 후보 (AI 판정 보류)",
+    "metal": "Fe",
+    "node": "Fe3O 삼량체",
+    "linker": "트라이메스산 (BTC)",
+    "cif": "MIL100Fe_WS14s.cif",
+    "cif_source": "Zenodo 12110918 (WS14s 기준 구조, F 포함)",
+    "descriptors": null,
+    "mofsimplify_score": null,
+    "mofsimplify_status": "특성 계산 실패 → 미판정 (불안정 판정이 아님)",
+    "rationale": "Fe 계열로 저렴하고 인산염과 친화성이 보고된 문헌 후보입니다. 다만 MOFSimplify가 이 구조의 특성 계산에 실패해 AI 물 안정성 판정은 비워 둡니다.",
+    "check_next": "실제로 쓰는 시료(OH형, HF-free 합성)의 구조를 따로 확인. 이 CIF는 F를 포함하므로 같은 구조로 가정하지 않음"
+  }
+]

@@ -1,0 +1,7 @@
+﻿MOF,구조 파일,물 안정성 모델 점수,판정 또는 실행 상태,자료 구분,실행 완료 시각 UTC,CIF 원본 SHA256,구조 출처
+MIL-100(Fe),MIL100Fe_WS14s.cif,,"특성 계산 실패, 안정성 미판정",구조 입력 실패 기록,2026-10-08T11:56:01.273131+00:00,60cb1d83e8398898b1724bc5b4e7dcaa55b1d12e6c93edf48bd34e879a8d13cf,https://zenodo.org/records/12110918
+UiO-66,UiO66_WS14s.cif,0.87,water-stable,Primary same-source comparison,2026-10-08T11:54:49.685645+00:00,58d00318d12da287e898721412033b03636cdf822874ce2b41e648e78e03a42b,https://zenodo.org/records/12110918
+UiO-66-NH2,UiO66NH2_WS14s.cif,0.77,water-stable,Primary same-source comparison,2026-10-08T11:55:03.773750+00:00,ae3d38065e36c50bdcaaac861193e6971e71dc082a36ae855204781912dfacd4,https://zenodo.org/records/12110918
+MIL-100(Fe),MIL100Fe_CIGXIA_manual.cif,,"특성 계산 실패, 안정성 미판정",구조 입력 실패 기록,2026-10-08T11:51:06.434258+00:00,c25ee7a8c35333f4fba255223c127df7b68a22296cae72c6d78c7e6e2138232d,https://raw.githubusercontent.com/hjkgrp/MOFSimplify/main/CoRE2019/CIGXIA_manual.cif
+UiO-66,UiO66_RUBTAK01_SL.cif,0.85,water-stable,Additional reference-structure check,2026-10-08T11:50:58.580337+00:00,2ff3b53619a667d61f06959a34045d2b1f9c0edcdeff716fd428d714561f9c30,https://raw.githubusercontent.com/hjkgrp/MOFSimplify/main/CoRE2019/RUBTAK01_SL.cif
+UiO-66-NH2,UiO66NH2_PSYMOF_reference.cif,0.77,water-stable,Additional reference-structure check,2026-10-08T11:51:45.537657+00:00,a0413b8f6676af312e06cd63d310c620450665163d4519be55b496709436bb49,https://raw.githubusercontent.com/MTMLab/PSYMOF/main/example/UiO-66-NH2.cif
