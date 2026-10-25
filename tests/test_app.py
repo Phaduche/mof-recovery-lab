@@ -19,3 +19,13 @@ def test_finalist_predictions_are_in_range():
         if f['descriptor_frame'] is not None:
             p = data.predict_water(f['descriptor_frame']).water_prob.iloc[0]
             assert 0 <= p <= 1
+
+def test_stale_module_is_reloaded():
+    """Simulates Streamlit Cloud keeping an old moflab.data in memory after a redeploy."""
+    from moflab import data, reload
+    del data.variants
+    for name in reload.ORDER:
+        mod = __import__(f'moflab.{name}', fromlist=['_'])
+        mod.__dict__.pop('__mtime__', None)
+    reload.refresh_if_changed()
+    assert callable(data.variants)

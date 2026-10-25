@@ -1,8 +1,9 @@
 """MOF Recovery Lab — web edition.  Run: streamlit run app.py"""
 import streamlit as st
-from moflab import ui
+from moflab import reload, ui
 
 st.set_page_config(page_title='MOF Recovery Lab', page_icon='💧', layout='wide')
+reload.refresh_if_changed()
 ui.setup()
 
 pages = {
