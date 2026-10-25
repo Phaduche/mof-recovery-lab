@@ -9,11 +9,16 @@ from pathlib import Path
 import streamlit as st
 
 PACKAGE = Path(__file__).resolve().parent
-# Dependencies first, so `from .data import ...` in ui picks up the reloaded module.
-ORDER = ['descriptors', 'physics', 'scoring', 'cif', 'data', 'viewer', 'ui']
+# Modules that import siblings go last, so `from .data import ...` picks up the reloaded module.
+LAST = ['data', 'viewer', 'ui']
+
+def _loaded():
+    names = [n.split('.', 1)[1] for n in sys.modules if n.startswith('moflab.') and n != __name__]
+    names.sort(key=lambda n: (LAST.index(n) if n in LAST else -1, n))
+    return [(sys.modules[f'moflab.{n}'], PACKAGE / f'{n}.py') for n in names if (PACKAGE / f'{n}.py').exists()]
 
 def refresh_if_changed():
-    loaded = [(sys.modules[f'moflab.{n}'], PACKAGE / f'{n}.py') for n in ORDER if f'moflab.{n}' in sys.modules]
+    loaded = _loaded()
     # Modules imported before this guard existed carry no stamp, so they are reloaded once too.
     if all(getattr(m, '__mtime__', None) == p.stat().st_mtime_ns for m, p in loaded):
         return

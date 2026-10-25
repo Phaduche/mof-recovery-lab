@@ -56,7 +56,10 @@ with tab_table:
         st.session_state['entry_id'] = picked.material_id
         c1, c2 = st.columns([3, 1])
         c1.success(f'선택: **{picked.display_name}** ({picked.metal})')
-        c2.page_link('views/entry.py', label='3D 구조 상세 열기 →', icon=':material/deployed_code:')
+        if c2.button('스크리닝에서 열기 →', icon=':material/biotech:', width='stretch'):
+            st.session_state['tool_source'] = f'데이터베이스 ({len(df):,})'
+            st.session_state['tool_metals'] = [picked.metal] if picked.metal == picked.metal else []
+            st.switch_page('views/tool.py')
     st.download_button('필터 결과 CSV', table.to_csv(index=False).encode('utf-8-sig'),
                        file_name='mof_candidates.csv', mime='text/csv')
 
