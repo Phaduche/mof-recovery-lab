@@ -11,10 +11,10 @@ with left:
             'AI로 2,700여 개 구조를 거르고, UiO-66 변형체 19종을 비교해 실험할 소재를 골랐습니다.')
     st.write('')
     b1, b2, _ = st.columns([1, 1, 0.6])
-    if b1.button('결과 보기', icon=':material/emoji_events:', type='primary', width='stretch'):
+    if b1.button('스크리닝 시작', icon=':material/biotech:', type='primary', width='stretch'):
+        st.switch_page('views/tool.py')
+    if b2.button('결과 보기', icon=':material/emoji_events:', width='stretch'):
         st.switch_page('views/results.py')
-    if b2.button('실험 계획', icon=':material/biotech:', width='stretch'):
-        st.switch_page('views/experiment.py')
 with right:
     viewer.crystal(data.variant_cif(best['key']), '볼 & 스틱', 2, False, True, height=400,
                    highlight=['Zr'], frame=False)
