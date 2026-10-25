@@ -2,9 +2,7 @@ import plotly.express as px
 import streamlit as st
 from moflab import data, ui
 
-ui.heading('Database', '후보 탐색',
-           'CoRE MOF 2025 공개 구조 2,737개에 우리 AI 모델의 물 안정성 지수를 붙였습니다. '
-           '조건을 걸어 후보를 좁히고, 행을 선택하면 3D 구조 상세로 이동할 수 있습니다.')
+ui.heading('Database', '후보 탐색', 'CoRE MOF 2025 · 2,737개 구조 + AI 물 안정성 지수')
 df = data.catalog()
 
 with st.container(border=True):
@@ -59,8 +57,6 @@ with tab_table:
         c1, c2 = st.columns([3, 1])
         c1.success(f'선택: **{picked.display_name}** ({picked.metal})')
         c2.page_link('views/entry.py', label='3D 구조 상세 열기 →', icon=':material/deployed_code:')
-    else:
-        st.caption('행을 클릭해 선택하면 구조 상세로 이동할 수 있습니다.')
     st.download_button('필터 결과 CSV', table.to_csv(index=False).encode('utf-8-sig'),
                        file_name='mof_candidates.csv', mime='text/csv')
 
@@ -74,4 +70,3 @@ with tab_map:
                      log_x=True)
     fig.update_layout(height=520, legend=dict(orientation='h', y=1.08))
     st.plotly_chart(fig, width='stretch')
-    st.caption('점 크기 = 공극률. 지수는 AI 예측이며 같은 지수라도 학습 범위·트리 간 편차를 함께 확인해야 합니다.')

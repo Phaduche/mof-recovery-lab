@@ -5,9 +5,7 @@ from moflab import ui
 from moflab.physics import concentration_as_p, mass_balance, scenario_recovery
 from moflab.scoring import CRITERIA, LABELS, ScorePolicy, capacity_index, evaluate
 
-ui.heading('AI tool', '회수 성능 계산기',
-           '회분식 흡착–탈착 실험의 측정값을 넣으면 인(P) 물질수지와 100점 평가 점수를 계산합니다. '
-           '저장은 하지 않으며, 실제 실험 기록은 로컬 연구 앱(SQLite)에서 관리합니다.')
+ui.heading('Tool', '회수 계산기', '실험값 → 포집률 · 탈착률 · 100점 평가')
 
 tab_mb, tab_score, tab_scale = st.tabs(['① 물질수지', '② 100점 평가', '③ 적용 시나리오'])
 
@@ -54,7 +52,7 @@ with tab_mb:
 with tab_score:
     policy = ScorePolicy()
     mb = st.session_state.get('mb')
-    st.write('총점 = 0.40×안정성 + 0.20×포집 + 0.25×탈착 회수 + 0.15×재사용. 안정성 70점 미만은 순위에서 제외합니다.')
+    ui.note('총점 = 안정성 40 + 포집 20 + 탈착 25 + 재사용 15 · 안정성 70 미만은 순위 제외')
     s1, s2, s3, s4 = st.columns(4)
     stability = s1.number_input('안정성 (0–100, 실험 지수)', 0.0, 100.0, 80.0,
                                 help='PXRD 결정성 유지·금속 용출 등 팀이 정한 공통 평가법으로 환산한 값. AI 예측값이 아닙니다.')
@@ -82,7 +80,6 @@ with tab_score:
                  hide_index=True, width='stretch')
 
 with tab_scale:
-    st.write('인이 농축된 흐름에 소재를 적용했을 때 하루 회수 가능한 인의 양을 어림합니다. 예비 타당성 검토용 단순 계산입니다.')
     presets = {'하수처리장 반류수 (예시)': (5000.0, 30.0), '혐기성 소화 탈리액 (예시)': (500.0, 100.0),
                '하천수 (비교용)': (2_000_000.0, 0.1)}
     p = st.selectbox('흐름 유형', list(presets))
@@ -93,5 +90,4 @@ with tab_scale:
     eta = x3.slider('전체 회수율 (%)', 0, 100, 40) / 100
     kg = scenario_recovery(flow, conc, eta)
     st.metric('하루 회수 인', f'{kg:,.1f} kg P/일', help='처리량 × 농도 × 회수율')
-    st.caption(f'연간 약 {kg*365/1000:,.1f} t P. 프리셋 숫자는 계산 예시이며 특정 시설의 측정값이 아닙니다. '
-               '같은 양의 인을 얻는 데 필요한 처리량이 농도에 반비례하므로, 고농도 흐름을 대상으로 잡았습니다.')
+    st.caption(f'연간 약 {kg*365/1000:,.1f} t P · 프리셋은 계산 예시')
