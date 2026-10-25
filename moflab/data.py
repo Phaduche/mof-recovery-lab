@@ -53,6 +53,21 @@ def finalists():
     return items
 
 @st.cache_data
+def variants():
+    return pd.read_csv(DATA / 'variants/variants.csv')
+
+@st.cache_data
+def picks():
+    return json.loads((DATA / 'variants/picks.json').read_text())
+
+@st.cache_data
+def variant_cif(key):
+    path = (DATA / 'variants' / f'{key}.cif').resolve()
+    if not path.is_relative_to((DATA / 'variants').resolve()) or not path.exists():
+        return None
+    return path.read_text(errors='replace')
+
+@st.cache_data
 def validation():
     return json.loads((MODELS / 'water_validation.json').read_text())
 

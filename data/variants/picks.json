@@ -1,0 +1,12 @@
+{
+  "ranking": [
+    {"key": "UiO-66-NH2", "rank": 1, "title": "최종 선택",
+     "why": ["물에서 높은 안정성 (문헌 3등급)", "–NH₂가 인산염과 수소결합, 산성에서 양전하", "시판품·문헌이 많아 고등학교 실험에 적합"]},
+    {"key": "MOF-804", "rank": 2, "title": "2순위",
+     "why": ["물 안정 3등급", "–OH ×2 수소결합", "직접 합성 필요 → 구하기 어려움"]},
+    {"key": "mil-100-fe", "rank": 3, "title": "3순위",
+     "why": ["물·끓는 물 안정", "Fe–OH 자리가 인산염과 결합", "MOFSimplify 계산 실패 → AI 판정 보류"]}
+  ],
+  "control": "UiO-66",
+  "mofsimplify_official": {"UiO-66": 0.87, "UiO-66-NH2": 0.77, "mil-100-fe": null}
+}

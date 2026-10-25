@@ -8,7 +8,7 @@ options = pred.material_id.tolist() + df[df.water_prob.isna()].material_id.tolis
 labels = dict(zip(df.material_id, df.display_name + ' · ' + df.metal.fillna('?')))
 current = st.session_state.get('entry_id', options[0])
 
-ui.heading('Structure entry', '구조 상세')
+ui.heading('Structure', '구조 상세')
 mid = st.selectbox('구조 선택 (지수 높은 순)', options, index=options.index(current) if current in options else 0,
                    format_func=labels.get)
 st.session_state['entry_id'] = mid
@@ -68,4 +68,4 @@ fig.update_layout(height=340, xaxis=dict(type='log', title='LCD (Å)'), yaxis_ti
 st.plotly_chart(fig, width='stretch')
 if cif:
     st.download_button('CIF 다운로드', cif, file_name=f'{r["name"]}.cif', mime='chemical/x-cif')
-ui.note('구조와 기하 특성은 CoRE MOF 2025(CC BY 4.0) 원자료입니다. 물 안정성 지수만 우리 모델의 예측입니다.')
+ui.note('구조 · 기공: CoRE MOF 2025 원자료 / 지수: 우리 AI 예측')
