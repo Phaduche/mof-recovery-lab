@@ -80,8 +80,3 @@ with c2:
     ui.kv([('판정 이유', picked.verdict_reason), ('물 안정', f'{picked.water_class}등급 · {picked.water_class_label}'),
            ('산 / 끓는 물', f"{'O' if picked.acid_stable else '—'} / {'O' if picked.boiling_stable else '—'}"),
            ('기공 지름', f'{picked.lcd_A:.1f} Å'), ('표면적', f'{picked.gsa_m2_g:,.0f} m²/g')])
-
-with st.expander('한계'):
-    st.markdown('- 등급은 **물** 안정성이며, 인산염 흡착량은 아직 실험값이 없습니다.\n'
-                '- UiO-66 계열은 **염기(NaOH) 안정성 기록이 없습니다** → 탈착 조건은 실험에서 꼭 확인.\n'
-                '- 이 19종은 AI 학습 데이터에 포함돼 있어 RF 점수는 참고용(in-sample)입니다. 판정은 문헌 등급 기준.')

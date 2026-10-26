@@ -79,7 +79,3 @@ for col, (k, w, d) in zip(s, [('안정성', 40, '구조 유지 · 용출'), ('�
                                ('탈착', 25, '붙은 인 중 회수'), ('재사용', 15, '1회차 대비')]):
     col.metric(k, f'{w}점', d, delta_color='off')
 ui.note('안정성 70점 미만은 순위 제외 · 동점이면 네 점수가 고른 후보 우선')
-
-with st.expander('한계'):
-    for item in val['limits']:
-        st.markdown(f'- {item}')

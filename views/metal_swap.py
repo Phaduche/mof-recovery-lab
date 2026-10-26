@@ -30,7 +30,7 @@ with left:
            ('부피 변화', f'{r.volume_change_pct:+.1f} %'),
            ('평균 금속–O', f'{r.metal_o_A:.2f} Å'),
            ('UiO-66형 합성', r.reported)])
-    ui.note('0 = Zr와 같음 · 양수 = Zr보다 불리 · 음수 = 계산상 더 유리 (합성 가능성과는 별개)')
+    ui.note('0 = Zr와 같음 · 양수 = Zr보다 불리 · 음수 = 계산상 더 유리')
 with right:
     viewer.crystal(data.metal_swap_cif(pick), '볼 & 스틱', 1, True, False, height=400, highlight=[pick])
     st.caption(f'CHGNet으로 구조 이완한 Zr → {pick} 구조')
@@ -48,7 +48,7 @@ st.plotly_chart(fig, width='stretch')
 st.markdown(' '.join(f"<span class='pill' style='background:{c}22;color:#0F2236'>+{o}가</span>"
                      for o, c in OX_COLOR.items()), unsafe_allow_html=True)
 
-with st.expander('어떻게 계산했나 · 한계'):
+with st.expander('어떻게 계산했나'):
     meta = data.metal_swap_meta()
     st.markdown(f"""
 1. UiO-66-NH₂ 구조에서 Zr 6개를 모두 다른 금속으로 바꿈
@@ -56,6 +56,3 @@ with st.expander('어떻게 계산했나 · 한계'):
 3. 각 금속의 순수 결정(벌크)도 이완해서 기준 에너지 μ를 구함
 """)
     st.latex(r'\Delta E_{\text{swap}} = \frac{E(\text{M-MOF}) - E(\text{Zr-MOF}) - 6(\mu_\text{M} - \mu_\text{Zr})}{6}')
-    st.markdown('- CHGNet은 DFT(Materials Project) 결과로 학습한 **AI 퍼텐셜**입니다. DFT를 직접 돌린 값이 아니라 근사치입니다.\n'
-                '- +1가(K, Na), +2가 금속은 전하가 맞지 않는 **가상의 구조**입니다. 실제로는 이런 노드가 만들어지지 않습니다.\n'
-                '- 물 · 인산염과의 결합 에너지는 아직 계산하지 않았습니다.')
