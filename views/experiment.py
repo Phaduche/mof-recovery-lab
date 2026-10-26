@@ -3,7 +3,8 @@ import plotly.graph_objects as go
 import streamlit as st
 from moflab import ui
 
-ui.heading('Experiment plan', '실험 계획', 'UiO-66-NH₂ vs UiO-66 · 고등학교 실험실 · 2주')
+from moflab import data
+ui.heading('Experiment plan', '실험 계획', f"Final {data.final_pick()['name']} vs 기준 UiO-66 · 고등학교 실험실 · 2주")
 
 STEPS = [
     {'title': '검량선', 'days': (1, 1), 'goal': '흡광도 → 인 농도 변환식 만들기',
@@ -18,7 +19,7 @@ STEPS = [
      'check': '공시험 농도 변화 < 5%'},
     {'title': '시간 · pH', 'days': (4, 6), 'goal': '언제 다 붙나, 어떤 pH가 유리한가',
      'how': ['시간: 5 · 15 · 30 · 60 · 120분', 'pH: 4 · 7 · 9', '나머지 조건은 2단계와 동일'],
-     'calc': None, 'check': '가설 — 산성일수록 –NH₂(→ –NH₃⁺)가 유리'},
+     'calc': None, 'check': '가설 — 산성일수록 Zr–OH 자리가 양성자화되어 인산염이 더 잘 붙음'},
     {'title': '탈착', 'days': (7, 8), 'goal': '붙은 인을 다시 꺼낼 수 있나',
      'how': ['쓴 MOF를 걸러 건조', '0.1 M NaCl 또는 0.01 M NaOH 10 mL, 1시간', '탈착액 농도 측정'],
      'calc': r'\text{탈착률} = \frac{\text{탈착액 속 인}}{\text{붙어 있던 인}}\times100',
@@ -58,7 +59,8 @@ st.caption('모든 조건은 MOF마다 3회 반복 · 측정 범위를 넘으면
 
 # ── Prep checklist ──────────────────────────────────────────────────
 st.subheader('준비물')
-groups = {'소재 · 시약': ['UiO-66-NH₂ 분말', 'UiO-66 분말', 'KH₂PO₄', '0.1 M HCl / NaOH', 'NaCl'],
+FINAL = data.final_pick()['name']
+groups = {'소재 · 시약': [f'{FINAL} 시료', 'UiO-66 분말 (기준)', 'KH₂PO₄', '0.1 M HCl / NaOH', 'NaCl'],
           '측정': ['인산염 비색 키트', '분광광도계 / 비색계', 'pH 미터', '정밀 저울 (0.1 mg)'],
           '기구': ['50 mL 튜브', '교반기', '주사기 + 0.45 μm 필터', '원심분리기 (선택)']}
 cols = st.columns(3)

@@ -73,9 +73,17 @@ with st.expander('더 보기 · 신뢰도 곡선 · fold별 성능'):
     c4.plotly_chart(fig, width='stretch')
     st.markdown(f"학습 범위: 가장 가까운 학습 MOF까지 거리가 {val['domain_distance_p95']:.2f}보다 멀면 '범위 밖'(외삽).")
 
-st.subheader('실험 점수 (100점)')
+st.subheader('점수 (200점)')
 s = st.columns(4)
-for col, (k, w, d) in zip(s, [('안정성', 40, '구조 유지 · 용출'), ('포집', 20, '목표 흡착량 대비'),
-                               ('탈착', 25, '붙은 인 중 회수'), ('재사용', 15, '1회차 대비')]):
+for col, (k, w, d) in zip(s, [('안정성', 100, '절대평가'), ('포집', 40, '상대평가 (z)'),
+                               ('탈착', 35, '상대평가 (z)'), ('재사용', 25, '상대평가 (z)')]):
     col.metric(k, f'{w}점', d, delta_color='off')
-ui.note('안정성 70점 미만은 순위 제외 · 동점이면 네 점수가 고른 후보 우선')
+st.dataframe(pd.DataFrame({
+    '항목': ['안정성', '포집', '탈착', '재사용'],
+    'AI가 보는 것': ['RF 물 안정성 확률 × 100',
+                  '금속의 인산염 결합력 × 표면적 · 기공 통과 + 작용기 전하 + 열린 금속 자리',
+                  '결합의 되돌림 쉬움(금속) × 기공 크기',
+                  '물 안정성 · 열분해 온도 · 염기 안정성'],
+}), hide_index=True, width='stretch')
+st.latex(r'z = \frac{x - \mu_A}{\sigma_A},\qquad \text{점수} = \text{배점}\times\Phi\!\left(\tfrac{z}{2}\right)')
+ui.note('μ, σ는 A 단계 데이터베이스 전체 기준 → B 단계 수정 MOF도 같은 잣대 · 동점이면 네 점수 불균형(z)이 낮은 MOF 우선')

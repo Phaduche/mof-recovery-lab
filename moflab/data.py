@@ -57,13 +57,42 @@ def variants():
     return pd.read_csv(DATA / 'variants/variants.csv')
 
 @st.cache_data
-def picks():
-    return json.loads((DATA / 'variants/picks.json').read_text())
-
-@st.cache_data
 def variant_cif(key):
     path = (DATA / 'variants' / f'{key}.cif').resolve()
     if not path.is_relative_to((DATA / 'variants').resolve()) or not path.exists():
+        return None
+    return path.read_text(errors='replace')
+
+@st.cache_data
+def stage_a():
+    return pd.read_parquet(DATA / 'pipeline/stage_a.parquet')
+
+@st.cache_data
+def stage_b():
+    return pd.read_parquet(DATA / 'pipeline/stage_b.parquet')
+
+@st.cache_data
+def pipeline_stats():
+    return json.loads((DATA / 'pipeline/stats.json').read_text())
+
+@st.cache_data
+def final_pick():
+    return json.loads((DATA / 'pipeline/final.json').read_text())
+
+def score_mof(water_prob, metal, pld_A=None, gsa_m2_g=None, open_metal_site=None, group_effect='0',
+              thermal_C=None, base_stable=None):
+    """200-point score of one MOF on the stage-A scale, plus where it would rank in stage A."""
+    from . import pipeline
+    raw = pipeline.raw_scores(water_prob, metal, pld_A, gsa_m2_g, open_metal_site, group_effect, thermal_C, base_stable)
+    row = pipeline.score(pd.DataFrame([{'water_prob': water_prob or 0.0, **raw}]), pipeline_stats()).iloc[0]
+    rank = int((stage_a().total > row.total).sum()) + 1
+    return row, rank
+
+@st.cache_data
+def pipeline_cif(structure_id):
+    folder = (DATA / 'pipeline/structures').resolve()
+    path = (folder / f'{structure_id}.cif').resolve()
+    if not path.is_relative_to(folder) or not path.exists():
         return None
     return path.read_text(errors='replace')
 
