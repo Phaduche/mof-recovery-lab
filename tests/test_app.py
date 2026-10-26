@@ -4,7 +4,7 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ['views/tool.py', 'views/metal_swap.py', 'views/explore.py', 'views/calculator.py', 'views/home.py', 'views/results.py',
+PAGES = ['views/pipeline.py', 'views/tool.py', 'views/metal_swap.py', 'views/explore.py', 'views/calculator.py', 'views/home.py',
          'views/experiment.py', 'views/methods.py', 'views/sources.py']
 
 @pytest.mark.parametrize('page', PAGES)
@@ -31,6 +31,7 @@ def test_stale_module_is_reloaded():
 
 def test_tool_variant_and_upload_modes_render():
     at = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=60).run()
+    at.switch_page(str(ROOT / 'views/tool.py')).run()
     for mode in [1, 2]:
         at.segmented_control(key='tool_source').set_value(at.segmented_control(key='tool_source').options[mode]).run()
         assert not at.exception, [e.message for e in at.exception]
@@ -58,3 +59,19 @@ def test_metal_swap_results_are_consistent():
     assert abs(zr.swap_energy_eV) < 1e-9          # reference is zero by definition
     k = df.set_index('metal').loc['K']
     assert data.swap_verdict(k)[0].startswith('전하 불균형')
+
+def test_pipeline_order_and_final():
+    from moflab import data
+    a, b, final = data.stage_a(), data.stage_b(), data.final_pick()
+    assert a.total.round(1).is_monotonic_decreasing and list(a['rank'][:3]) == [1, 2, 3]   # ties → balance z
+    assert set(b[b.change == '원본'].parent) == set(a.head(3).name)       # B starts from A's top 3
+    assert b.iloc[0].id == final['id']                                    # Final = best of B
+    assert b.total.max() >= a.total.max()
+    assert (b.total <= 200).all() and (b.stability <= 100).all()
+
+def test_score_mof_matches_stage_a_scale():
+    from moflab import data
+    r = data.stage_a().iloc[0]
+    row, rank = data.score_mof(r.water_prob, r.metal, r.pld_A, r.gsa_m2_g, r.open_metal_site, r.group_effect,
+                               r.thermal_C, r.base_stable)
+    assert abs(row.total - r.total) < 1e-6 and rank == 1

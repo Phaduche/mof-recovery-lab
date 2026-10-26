@@ -1,32 +1,29 @@
 import streamlit as st
 from moflab import data, ui, viewer
 
-df = data.catalog()
-var = data.variants().set_index('key')
-best = data.picks()['ranking'][0]
+A, B, best = data.stage_a(), data.stage_b(), data.final_pick()
 
 left, right = st.columns([1.05, 1], gap='large', vertical_alignment='center')
 with left:
     ui.hero('KJWP 2026 · 옹기종기', '버려지는 <em>인(P)</em>을<br>다시 모으는 MOF',
-            'AI로 2,700여 개 구조를 거르고, UiO-66 변형체 19종을 비교해 실험할 소재를 골랐습니다.')
+            f'AI로 {len(A):,}개 MOF를 200점 만점으로 채점하고, 상위 3개를 고쳐 다시 채점해 최적 MOF를 골랐습니다.')
     st.write('')
     b1, b2, _ = st.columns([1, 1, 0.6])
-    if b1.button('스크리닝 시작', icon=':material/biotech:', type='primary', width='stretch'):
+    if b1.button('파이프라인 보기', icon=':material/route:', type='primary', width='stretch'):
+        st.switch_page('views/pipeline.py')
+    if b2.button('점수 계산', icon=':material/biotech:', width='stretch'):
         st.switch_page('views/tool.py')
-    if b2.button('결과 보기', icon=':material/emoji_events:', width='stretch'):
-        st.switch_page('views/results.py')
 with right:
-    viewer.crystal(data.variant_cif(best['key']), '볼 & 스틱', 2, False, True, height=400,
-                   highlight=['Zr'], frame=False)
-    st.markdown(f"<p class='note' style='text-align:center'>최종 선택 · <b>{var.loc[best['key'], 'name']}</b></p>",
+    viewer.crystal(data.pipeline_cif(best['id']), '스틱', 1, False, True, height=400, highlight=['Zr'], frame=False)
+    st.markdown(f"<p class='note' style='text-align:center'>Final · <b>{best['name']}</b> · {best['total']} / 200</p>",
                 unsafe_allow_html=True)
 
 st.write('')
 m = st.columns(4)
-m[0].metric('공개 레코드', f"{sum(s['records'] for s in data.sources()):,}")
-m[1].metric('AI 예측 구조', f"{df.water_prob.notna().sum():,}")
-m[2].metric('비교한 변형체', f'{len(var)}종')
-m[3].metric('최종 후보', '3종')
+m[0].metric('A · 채점한 MOF', f'{len(A):,}')
+m[1].metric('A · 최종 3개', '3')
+m[2].metric('B · 수정한 MOF', f"{(B.change != '원본').sum()}")
+m[3].metric('Final', f"{best['total']} / 200")
 
 st.write('')
 st.subheader('왜 인(P)인가')
@@ -40,8 +37,9 @@ with c[2]:
 
 st.write('')
 st.subheader('연구 흐름')
-steps = [('🗂️', '데이터', '공개 DB 36,857건'), ('🤖', 'AI 선별', '물 안정성 예측'),
-         ('🧪', '변형 비교', 'UiO-66 작용기 19종'), ('🔬', '실험 검증', '포집 · 탈착 · 재사용')]
-for col, (icon, t, d) in zip(st.columns(4), steps):
+steps = [('🗂️', 'A-1 · 데이터', 'CoRE + MOFSimplify'), ('🤖', 'A-2 · 채점', '200점 만점'),
+         ('🥉', 'A-3 · 최종 3개', '최고점 3개'), ('🧪', 'B · 수정 · 재채점', '링커 7 · 원소 6'),
+         ('🏆', 'Final', best['name'])]
+for col, (icon, t, d) in zip(st.columns(5), steps):
     with col:
         ui.card(t, d, icon)

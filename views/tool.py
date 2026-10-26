@@ -8,8 +8,8 @@ df = data.catalog()
 var = data.variants()
 
 st.markdown('<div class="eyebrow">MOF Recovery Lab</div>', unsafe_allow_html=True)
-st.title('인산염 회수용 MOF 스크리닝')
-st.markdown('<p class="sub">MOF를 고르면 → 물 안정성 AI 예측 · 인산염 적합성 체크 · 3D 구조</p>', unsafe_allow_html=True)
+st.title('MOF 점수 계산')
+st.markdown('<p class="sub">MOF를 고르면 → AI 200점 채점 (안정성 · 포집 · 탈착 · 재사용) · 3D 구조</p>', unsafe_allow_html=True)
 
 # ── ① Select ────────────────────────────────────────────────────────
 SOURCES = [f'데이터베이스 ({len(df):,})', f'UiO-66 변형체 ({len(var)})', '내 구조 업로드']
@@ -34,7 +34,8 @@ if source == SOURCES[0]:
     mof = dict(name=r.display_name, cif=data.read_cif(mid), water_prob=r.water_prob,
                in_domain=None if r.in_domain != r.in_domain else r.in_domain, metal=r.metal,
                pld=r.pld_A, lcd=r.lcd_A, gsa=r.gsa_m2_g, nearest=r.nearest_training_name,
-               water_class=None, effect=None, file=f"{r['name']}.cif")
+               water_class=None, effect=None, file=f"{r['name']}.cif",
+               oms=bool(r.open_metal_site), thermal=r.source_thermal_C, base=None)
 
 elif source == SOURCES[1]:
     names = dict(zip(var.key, var.name))
@@ -43,7 +44,7 @@ elif source == SOURCES[1]:
     mof = dict(name=r['name'], cif=data.variant_cif(key), water_prob=r.rf_in_sample, in_domain=None,
                metal='Fe' if key == 'mil-100-fe' else 'Zr', pld=r.pld_A, lcd=r.lcd_A, gsa=r.gsa_m2_g,
                water_class=r.water_class, effect=r.effect, nearest=None, file=r.cif,
-               group=r.group, verdict=r.verdict)
+               group=r.group, verdict=r.verdict, oms=None, thermal=None, base=bool(r.base_stable) or None)
 
 else:
     u1, u2 = st.columns(2)
@@ -65,12 +66,13 @@ else:
             mof = dict(name=csv.name.removesuffix('.csv'), cif=cif_text, water_prob=float(pred.water_prob),
                        in_domain=bool(pred.in_domain), metal=metal, pld=None, lcd=None, gsa=None,
                        water_class=None, effect=None, nearest=pred.nearest_training_name,
-                       file=cif_up.name if cif_up else None)
+                       file=cif_up.name if cif_up else None, oms=None, thermal=None, base=None)
         except ValueError as exc:
             st.error(str(exc))
     elif cif_text:
         mof = dict(name=cif_up.name, cif=cif_text, water_prob=None, in_domain=None, metal=metal, pld=None,
-                   lcd=None, gsa=None, water_class=None, effect=None, nearest=None, file=cif_up.name)
+                   lcd=None, gsa=None, water_class=None, effect=None, nearest=None, file=cif_up.name,
+                   oms=None, thermal=None, base=None)
     if mof is None:
         st.info('descriptor CSV를 올리면 AI 예측, CIF를 올리면 3D 구조가 나옵니다.')
 
@@ -82,25 +84,26 @@ st.divider()
 checks = screen.checklist(mof['water_prob'], mof['in_domain'], mof['metal'], mof['pld'],
                           mof['water_class'], mof['effect'])
 verdict, passed, total = screen.summary(checks)
-tone = {'유망': ('#E6F4EA', '#137333'), '검토': ('#FFF4E5', '#8A5300'), '부적합': ('#FDECEA', '#B3261E')}[verdict]
+score, a_rank = data.score_mof(mof['water_prob'], mof['metal'], mof['pld'], mof['gsa'], mof['oms'],
+                               mof['effect'] or '0', mof['thermal'], mof['base'])
 
 left, right = st.columns([1, 1.35], gap='large')
 with left:
     st.markdown(f"### {mof['name']}")
-    st.markdown(f'''<div class="card" style="background:{tone[0]};border-color:{tone[0]}">
-      <div style="font-size:13px;font-weight:700;color:{tone[1]}">인산염 회수 스크리닝</div>
-      <div style="font-size:32px;font-weight:850;color:{tone[1]};line-height:1.25">{verdict}
-      <span style="font-size:15px;font-weight:600"> · {passed}/{total} 통과</span></div></div>''',
+    st.markdown(f'''<div class="card win" style="padding:16px 20px">
+      <p style="opacity:.85;font-size:13px;font-weight:700">AI 점수 · A 단계 기준 {a_rank:,}위 / {len(data.stage_a()):,}</p>
+      <div class="big">{score.total:.1f}<span style="font-size:18px;font-weight:600"> / 200</span></div></div>''',
                 unsafe_allow_html=True)
     st.write('')
-    for label, ok, detail in checks:
-        icon = {True: '✅', False: '❌', None: '➖'}[ok]
-        st.markdown(f"{icon} **{label}** <span class='note'>{detail}</span>", unsafe_allow_html=True)
-    st.write('')
-    title = 'AI 물 안정성 지수'
-    ui.confidence(mof['water_prob'], title)
-    if mof.get('nearest'):
-        ui.note(f"가장 비슷한 학습 MOF: {mof['nearest']}")
+    for k, label, w in [('stability', '안정성', 100), ('capture', '포집', 40), ('desorption', '탈착', 35), ('reuse', '재사용', 25)]:
+        st.markdown(f"**{label}** <span class='note'>{score[k]:.1f} / {w}</span>", unsafe_allow_html=True)
+        st.progress(min(1.0, float(score[k]) / w))
+    with st.expander(f'인산염 적합성 체크 · {verdict} ({passed}/{total})'):
+        for label, ok, detail in checks:
+            icon = {True: '✅', False: '❌', None: '➖'}[ok]
+            st.markdown(f"{icon} **{label}** <span class='note'>{detail}</span>", unsafe_allow_html=True)
+        if mof.get('nearest'):
+            ui.note(f"가장 비슷한 학습 MOF: {mof['nearest']}")
 
 with right:
     if mof['cif']:
@@ -119,7 +122,9 @@ with right:
         g[2].metric('표면적', f"{mof['gsa']:,.0f} m²/g")
 
 # ── ③ Export ────────────────────────────────────────────────────────
-result = {'name': mof['name'], 'screening': verdict, 'passed': f'{passed}/{total}',
+result = {'name': mof['name'], 'score_200': round(float(score.total), 1),
+          **{k: round(float(score[k]), 1) for k in ['stability', 'capture', 'desorption', 'reuse']},
+          'screening': verdict, 'passed': f'{passed}/{total}',
           'water_index': None if mof['water_prob'] is None or mof['water_prob'] != mof['water_prob']
           else round(100 * float(mof['water_prob']), 1),
           'checks': [{'item': l, 'pass': p, 'detail': d} for l, p, d in checks]}

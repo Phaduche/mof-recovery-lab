@@ -3,11 +3,13 @@ import plotly.graph_objects as go
 import streamlit as st
 from moflab import ui
 from moflab.physics import concentration_as_p, mass_balance, scenario_recovery
-from moflab.scoring import CRITERIA, LABELS, ScorePolicy, capacity_index, evaluate
+from statistics import mean, pstdev
+from moflab.pipeline import LABELS as PLABELS, WEIGHTS
+from moflab.scoring import capacity_index
 
-ui.heading('Tool', '회수 계산기', '실험값 → 포집률 · 탈착률 · 100점 평가')
+ui.heading('Tool', '회수 계산기', '실험값 → 포집률 · 탈착률 · 200점 평가')
 
-tab_mb, tab_score, tab_scale = st.tabs(['① 물질수지', '② 100점 평가', '③ 적용 시나리오'])
+tab_mb, tab_score, tab_scale = st.tabs(['① 물질수지', '② 200점 평가', '③ 적용 시나리오'])
 
 with tab_mb:
     a, b, c = st.columns(3)
@@ -50,9 +52,8 @@ with tab_mb:
         st.caption(f"농축 배율 {mb['concentration_factor']:.1f}× · {mb['interpretation']}")
 
 with tab_score:
-    policy = ScorePolicy()
     mb = st.session_state.get('mb')
-    ui.note('총점 = 안정성 40 + 포집 20 + 탈착 25 + 재사용 15 · 안정성 70 미만은 순위 제외')
+    ui.note('총점 = 안정성 100 + 포집 40 + 탈착 35 + 재사용 25 (AI 점수와 같은 배점) · 각 항목은 0–100% 실험값')
     s1, s2, s3, s4 = st.columns(4)
     stability = s1.number_input('안정성 (0–100, 실험 지수)', 0.0, 100.0, 80.0,
                                 help='PXRD 결정성 유지·금속 용출 등 팀이 정한 공통 평가법으로 환산한 값. AI 예측값이 아닙니다.')
@@ -62,21 +63,22 @@ with tab_score:
     desorption = min(100.0, mb['desorption_pct']) if mb and mb['desorption_pct'] is not None else 0.0
     s3.metric('탈착 회수 점수', f'{desorption:.1f}')
     reuse = s4.number_input('재사용 (목표 회차 / 1회차 × 100)', 0.0, 100.0, 85.0)
-    res = evaluate({'name': '현재 입력', 'stability': stability, 'capture': capture, 'desorption': desorption,
-                    'reuse': reuse, 'structure_supported': True, 'comparable': True}, policy)
+    pct = {'stability': stability, 'capture': capture, 'desorption': desorption, 'reuse': reuse}
+    points = {k: pct[k] * WEIGHTS[k] / 100 for k in WEIGHTS}
+    norm = [pct[k] / 100 for k in WEIGHTS]
+    cv = pstdev(norm) / mean(norm) if mean(norm) > 0 else 0.0
     left, right = st.columns([1, 1.2])
     with left:
-        st.metric('총점', f"{res['total_score']:.1f} / 100")
-        st.metric('불균형 CV (낮을수록 균형)', f"{res['balance_cv']:.3f}")
-        (st.success if res['eligible'] else st.warning)('순위 대상' if res['eligible'] else res['reason'])
+        st.metric('총점', f"{sum(points.values()):.1f} / 200")
+        st.metric('불균형 CV (낮을수록 균형)', f'{cv:.3f}')
     with right:
-        scores = [res[k] for k in CRITERIA]
-        radar = go.Figure(go.Scatterpolar(r=scores + scores[:1], theta=[LABELS[k] for k in CRITERIA] + [LABELS['stability']],
+        scores = [pct[k] for k in WEIGHTS]
+        radar = go.Figure(go.Scatterpolar(r=scores + scores[:1], theta=[PLABELS[k] for k in WEIGHTS] + [PLABELS['stability']],
                                           fill='toself', line_color='#0053D6'))
         radar.update_layout(height=320, polar=dict(radialaxis=dict(range=[0, 100])), showlegend=False)
         st.plotly_chart(radar, width='stretch')
-    st.dataframe(pd.DataFrame({'항목': [LABELS[k] for k in CRITERIA], '배점': [policy.weights[k] for k in CRITERIA],
-                               '점수': scores, '기여': [s * policy.weights[k] / 100 for s, k in zip(scores, CRITERIA)]}),
+    st.dataframe(pd.DataFrame({'항목': [PLABELS[k] for k in WEIGHTS], '배점': list(WEIGHTS.values()),
+                               '실험값 (%)': scores, '점수': list(points.values())}),
                  hide_index=True, width='stretch')
 
 with tab_scale:
