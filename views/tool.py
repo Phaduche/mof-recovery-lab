@@ -97,7 +97,7 @@ with left:
         icon = {True: '✅', False: '❌', None: '➖'}[ok]
         st.markdown(f"{icon} **{label}** <span class='note'>{detail}</span>", unsafe_allow_html=True)
     st.write('')
-    title = 'AI 물 안정성 지수 (참고: 학습 데이터 포함)' if mof['water_class'] is not None else 'AI 물 안정성 지수'
+    title = 'AI 물 안정성 지수'
     ui.confidence(mof['water_prob'], title)
     if mof.get('nearest'):
         ui.note(f"가장 비슷한 학습 MOF: {mof['nearest']}")
@@ -133,5 +133,4 @@ with st.expander('판정 기준'):
     st.markdown(f"- 물 안정성: 문헌 3등급↑ 또는 AI 지수 {screen.WATER_INDEX_MIN}↑ (가장 중요 — 실패하면 부적합)\n"
                 f"- 인산염 결합 금속: {', '.join(sorted(screen.PHOSPHATE_METALS))} (M–O–P 결합 보고)\n"
                 f"- 기공 통과: PLD ≥ {screen.PHOSPHATE_DIAMETER_A} Å면 내부까지 들어감 (작아도 탈락은 아님)\n"
-                "- 작용기 전하: pH 7에서 음전하(–COOH, –SO₃H)면 반발\n"
-                "- 경험 규칙 기반 1차 선별이며, 인산염 흡착량은 실험으로 확인해야 합니다.")
+                "- 작용기 전하: pH 7에서 음전하(–COOH, –SO₃H)면 반발")
