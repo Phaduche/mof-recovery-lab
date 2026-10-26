@@ -75,3 +75,17 @@ def test_score_mof_matches_stage_a_scale():
     row, rank = data.score_mof(r.water_prob, r.metal, r.pld_A, r.gsa_m2_g, r.open_metal_site, r.group_effect,
                                r.thermal_C, r.base_stable)
     assert abs(row.total - r.total) < 1e-6 and rank == 1
+
+def test_validation_page_compares_rankings():
+    at = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=60).run()
+    at.switch_page(str(ROOT / 'views/experiment.py')).run()
+    assert not at.exception, [e.message for e in at.exception]
+    table = at.dataframe[-1].value
+    assert list(table['항목']) == ['물 안정성', '인 포집', '탈착', '재사용']
+
+def test_rank_agreement():
+    from moflab.pipeline import rank_agreement
+    ai = [93.2, 74.9, 57.9, 67.9, 69.4]
+    assert rank_agreement(ai, [95, 90, 70, None, None]) == 1.0          # same order
+    assert rank_agreement(ai, [70, 90, 95, None, None]) == -1.0         # reversed
+    assert rank_agreement(ai, [95, None, None, None, None]) is None     # fewer than 3
