@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
@@ -17,6 +18,18 @@ with c[1]:
     ui.card('② 인력', '–NH₂ 수소결합, 산성에서 –NH₃⁺ 양전하가 음이온을 끌어당김.', '🧲')
 with c[2]:
     ui.card('③ 탈착', '염 · 묽은 염기 용액이 인산염을 밀어내 농축 회수.', '♻️')
+
+st.write('')
+st.subheader('AI가 DFT를 돌리나요?')
+st.dataframe(pd.DataFrame({
+    '도구': ['물 안정성 예측 (스크리닝)', '금속 바꾸기', 'DFT (참고)'],
+    '방법': ['Random Forest · 구조 숫자(RAC · 기공) → 문헌 등급', 'CHGNet · DFT로 학습한 AI 원자간 퍼텐셜',
+           '양자역학 직접 계산'],
+    '시뮬레이션': ['안 함', 'DFT 근사 (구조 이완)', '직접'],
+    '속도': ['0.01초', '구조당 수 분 (미리 계산)', '구조당 수 시간~수일'],
+    '알려주는 것': ['물에서 버틸 확률', '금속 교체 에너지 · 구조 변형', '정확한 에너지'],
+}), hide_index=True, width='stretch')
+ui.note('입력 숫자를 만들 때 Zeo++(기공 기하)와 molSimplify(RAC)를 쓰지만, 둘 다 에너지 계산이 아닌 구조 분석 도구입니다.')
 
 st.write('')
 st.subheader('AI 모델')
