@@ -1,0 +1,10 @@
+{
+ "source_structure": "UiO-66-NH2.cif",
+ "potential": "CHGNet 0.3.0 (Materials Project trajectory, PBE/PBE+U)",
+ "relax": {
+  "fmax_eV_A": 0.1,
+  "max_steps": 500,
+  "cell": true
+ },
+ "bulk_reference": "relaxed elemental crystal"
+}

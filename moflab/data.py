@@ -68,6 +68,33 @@ def variant_cif(key):
     return path.read_text(errors='replace')
 
 @st.cache_data
+def metal_swap():
+    path = DATA / 'metal_swap/results.csv'
+    return pd.read_csv(path) if path.exists() else None
+
+@st.cache_data
+def metal_swap_meta():
+    return json.loads((DATA / 'metal_swap/meta.json').read_text())
+
+@st.cache_data
+def metal_swap_cif(metal):
+    path = (DATA / 'metal_swap' / f'UiO-66-NH2_{metal}.cif').resolve()
+    if not path.is_relative_to((DATA / 'metal_swap').resolve()) or not path.exists():
+        return None
+    return path.read_text(errors='replace')
+
+def swap_verdict(row):
+    """Label a metal-swap result; thresholds are rough, per metal atom."""
+    e = row.swap_energy_eV
+    if not row.charge_balanced:
+        return '전하 불균형 · 가상 구조', ('#FDECEA', '#B3261E')
+    if e <= 0.5:
+        return 'Zr와 비슷하거나 유리', ('#E6F4EA', '#137333')
+    if e <= 2.0:
+        return 'Zr보다 불리', ('#FFF4E5', '#8A5300')
+    return '매우 불리', ('#FDECEA', '#B3261E')
+
+@st.cache_data
 def validation():
     return json.loads((MODELS / 'water_validation.json').read_text())
 

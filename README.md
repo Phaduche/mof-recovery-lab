@@ -12,6 +12,7 @@ MOF는 데이터베이스(CoRE MOF 2025, 2,737개) · UiO-66 변형체(19종) ·
 
 | 메뉴 | 내용 |
 |---|---|
+| 금속 바꾸기 | UiO-66-NH₂의 Zr를 12가지 금속으로 바꾼 교체 에너지 · 이완 구조 3D (CHGNet, 미리 계산) |
 | 후보 탐색 | 조건 필터로 여러 후보를 한 번에 비교 → 스크리닝으로 열기 |
 | 회수 계산기 | 흡착–탈착 물질수지, 100점 평가, 적용 시나리오 |
 | 연구 ▸ 소개 · 결과 · 실험 계획 · 방법 · 출처 | 연구 배경, 최종 선택(UiO-66-NH₂), 2주 실험 프로토콜, 모델 검증, 데이터 출처 |
@@ -42,6 +43,8 @@ streamlit run app.py
   `python -m scripts.build_variants --ws24 <data_sets와 features가 있는 폴더>`.
 - **문구·레이아웃**: 각 페이지는 `views/*.py`, 공통 스타일은 `moflab/ui.py`.
 - **3D 뷰어**: `moflab/viewer.py` (3Dmol.js 2.4.2, cdnjs).
+- **금속 교체 다시 계산**: `pip install chgnet` 후 `python -m scripts.metal_swap` (노트북에서 금속당 1–10분, 중간에 끊겨도 이어서 계산).
+  웹앱은 `data/metal_swap/` 결과만 읽으므로 Streamlit Cloud에 chgnet을 설치하지 않습니다.
 - **데이터 갱신**: 로컬 전체 연구 앱(SQLite, 약 100 MB)에서 스냅숏을 다시 만듭니다.
 
   ```bash

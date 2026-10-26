@@ -9,6 +9,7 @@ ui.setup()
 pages = {
     '': [
         st.Page('views/tool.py', title='스크리닝', icon=':material/biotech:', default=True),
+        st.Page('views/metal_swap.py', title='금속 바꾸기', icon=':material/swap_horiz:'),
         st.Page('views/explore.py', title='후보 탐색', icon=':material/travel_explore:'),
         st.Page('views/calculator.py', title='회수 계산기', icon=':material/calculate:'),
     ],
