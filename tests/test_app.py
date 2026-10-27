@@ -4,7 +4,7 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ['views/home.py', 'views/experiment.py', 'views/methods.py', 'views/sources.py']
+PAGES = ['views/home.py', 'views/methods.py', 'views/sources.py']
 STEPS = ['a1', 'a2', 'a3', 'b1', 'b2', 'final']
 
 @pytest.mark.parametrize('page', PAGES)
@@ -46,20 +46,6 @@ def test_pipeline_order_and_final():
     assert b.iloc[0].id == final['id']                                    # Final = best of B
     assert b.total.max() >= a.total.max()
     assert (b.total <= 200).all() and (b.stability <= 100).all()
-
-def test_validation_page_compares_rankings():
-    at = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=60).run()
-    at.switch_page(str(ROOT / 'views/experiment.py')).run()
-    assert not at.exception, [e.message for e in at.exception]
-    table = at.dataframe[-1].value
-    assert list(table['항목']) == ['물 안정성', '인 포집', '탈착', '재사용']
-
-def test_rank_agreement():
-    from moflab.pipeline import rank_agreement
-    ai = [93.2, 74.9, 57.9, 67.9, 69.4]
-    assert rank_agreement(ai, [95, 90, 70, None, None]) == 1.0          # same order
-    assert rank_agreement(ai, [70, 90, 95, None, None]) == -1.0         # reversed
-    assert rank_agreement(ai, [95, None, None, None, None]) is None     # fewer than 3
 
 @pytest.mark.parametrize('step', STEPS)
 def test_step_page_renders(step):

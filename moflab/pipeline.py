@@ -8,7 +8,6 @@ as the database it came from.
 """
 import math
 import numpy as np
-import pandas as pd
 
 WEIGHTS = {'stability': 100, 'capture': 40, 'desorption': 35, 'reuse': 25}
 LABELS = {'stability': '안정성', 'capture': '포집', 'desorption': '탈착', 'reuse': '재사용'}
@@ -82,15 +81,6 @@ def score(frame, stats):
     mean = norm.mean(axis=1)
     out['balance_cv'] = np.where(mean > 0, norm.std(axis=1) / np.where(mean > 0, mean, 1), 0.0)
     return out
-
-def rank_agreement(predicted, measured, minimum=3):
-    """Spearman ρ between AI scores and measurements (rows with a measurement only); None if too few."""
-    m = pd.to_numeric(pd.Series(measured), errors='coerce').reset_index(drop=True)
-    p = pd.Series(predicted, dtype=float).reset_index(drop=True)
-    ok = m.notna()
-    if ok.sum() < minimum:
-        return None
-    return float(p[ok].rank().corr(m[ok].rank()))   # Spearman = Pearson on ranks
 
 def rank(frame):
     """Highest total first; equal totals (to 0.1) → lower imbalance first."""

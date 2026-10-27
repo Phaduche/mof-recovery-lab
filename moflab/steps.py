@@ -9,14 +9,14 @@ STEPS = ['A-1', 'A-2', 'A-3', 'B-1', 'B-2', 'Final']
 TABLE_COLS = {'rank': '순위', 'name': 'MOF', 'source': '출처', 'metal': '금속', 'change': '종류', 'detail': '수정 내용',
               'total': '총점', 'stability': '안정성', 'capture': '포집', 'desorption': '탈착', 'reuse': '재사용'}
 
-def _header(step, title, sub, ai=None):
+def _header(step, title, ai=None):
     chips = ''.join(
         f"<span class='pill' style='background:{'#0053D6' if s == step else '#EEF2F6'};"
         f"color:{'#fff' if s == step else '#62758A'}'>{s}</span>" + ('' if s == 'Final' else
                                                                     "<span style='color:#B8C2CC'>→ </span>")
         for s in STEPS)
     st.markdown(f'<div style="margin-bottom:10px">{chips}</div>', unsafe_allow_html=True)
-    ui.heading(f'Step {step}', title, sub)
+    st.title(title)
     if ai:
         st.markdown(ui.pill(f'🤖 {ai}', '#F2EEFC', '#5B3FB0'), unsafe_allow_html=True)
 
@@ -41,7 +41,7 @@ def _finalists():
 
 def a1():
     A = data.stage_a()
-    _header('A-1', '데이터베이스에서 MOF 가져오기', '실험으로 보고된 MOF 구조 + 문헌 안정성 기록')
+    _header('A-1', '데이터베이스에서 MOF 가져오기')
     counts = A.source.value_counts()
     cols = st.columns(len(counts) + 1)
     for col, (src, n) in zip(cols, counts.items()):
@@ -54,12 +54,10 @@ def a1():
 
 def a2():
     A = data.stage_a()
-    _header('A-2', '모든 MOF를 AI로 200점 만점 채점', '안정성은 절대평가 · 나머지는 데이터베이스 안에서 상대평가',
-            'ML · Random Forest (물 안정성) + 점수 규칙')
+    _header('A-2', 'AI로 200점 만점 채점', 'ML · Random Forest + 점수 규칙')
     w = st.columns(4)
-    for col, (k, how) in zip(w, [('stability', '절대 · AI 확률 × 100'), ('capture', '상대 · z-score'),
-                                 ('desorption', '상대 · z-score'), ('reuse', '상대 · z-score')]):
-        col.metric(LABELS[k], f'{WEIGHTS[k]}점', how, delta_color='off')
+    for col, k in zip(w, WEIGHTS):
+        col.metric(LABELS[k], f'{WEIGHTS[k]}점')
     fig = go.Figure(go.Histogram(x=A.total, nbinsx=50, marker_color='#65A0E0'))
     for _, r in A.head(3).iterrows():
         fig.add_vline(x=r.total, line_color='#0053D6', line_dash='dot')
@@ -71,7 +69,7 @@ def a2():
 
 def a3():
     top3 = _finalists()
-    _header('A-3', '최고점 3개 = 최종 MOF', '데이터베이스 전체에서 총점이 가장 높은 3개')
+    _header('A-3', '최고점 3개')
     _score_bars(top3)
     names = top3.name.tolist()
     pick = st.segmented_control('MOF', names, default=names[0], key='a3_pick') or names[0]
@@ -85,8 +83,7 @@ def a3():
 
 def b1():
     top3, B = _finalists(), data.stage_b()
-    _header('B-1', '최종 3개의 연결 · 원소 바꾸기', '링커 작용기 7종 · 노드 금속 6종 → 39개',
-            'DL · CHGNet 그래프 신경망 (원소 교체 에너지)')
+    _header('B-1', '링커 · 원소 바꾸기', 'DL · CHGNet 그래프 신경망')
     names = top3.name.tolist()
     p1, p2 = st.columns([1, 2])
     par = p1.selectbox('원본 MOF', names, key='b1_parent')
@@ -95,36 +92,28 @@ def b1():
     m = mods[mods.name == mod_name].iloc[0]
     v1, v2 = st.columns(2)
     with v1:
-        st.caption(f'원본 · {par}')
+        st.caption('원본')
         viewer.crystal(data.pipeline_cif(top3[top3.name == par].iloc[0].id.split(':', 1)[1]), '스틱', 1, True, False,
                        height=360)
     with v2:
-        st.caption(f'수정 · {m.detail}')
+        st.caption(m.detail)
         viewer.crystal(data.pipeline_cif(m.id), '스틱', 1, True, False, height=360,
                        highlight=[m.metal] if m.change == '원소' else None)
 
-    st.subheader('원소를 바꾸면 에너지가 어떻게 되나')
+    st.subheader('원소 교체 에너지 (Zr 기준)')
     swap = data.metal_swap().sort_values('swap_energy_eV')
     ox_color = {4: '#0053D6', 3: '#24A0C8', 2: '#FFB020', 1: '#E5484D'}
     fig = go.Figure(go.Bar(x=swap.metal, y=swap.swap_energy_eV, marker_color=[ox_color[o] for o in swap.oxidation_state],
                            text=[f'{v:+.2f}' for v in swap.swap_energy_eV], textposition='outside',
                            customdata=swap.oxidation_state, hovertemplate='%{x} (+%{customdata}가) · %{y:+.2f} eV<extra></extra>'))
     fig.add_hline(y=0, line_color='#0F2236', line_width=1)
-    fig.update_layout(height=340, yaxis_title='Zr 대비 교체 에너지 (eV / 금속)', xaxis_title=None)
+    fig.update_layout(height=340, yaxis_title='eV / 금속', xaxis_title=None)
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
     st.markdown(' '.join(ui.pill(f'+{o}가', c + '22', '#0F2236') for o, c in ox_color.items()), unsafe_allow_html=True)
-    k = swap.set_index('metal').loc['K']
-    ui.note(f"0 = Zr와 같음 · 양수 = 불리 · 예: Zr → K는 {k.swap_energy_eV:+.2f} eV, 부피 {k.volume_change_pct:+.0f}% "
-            '(+1가라 전하가 맞지 않아 구조가 무너짐)')
-    with st.expander('어떻게 계산했나'):
-        st.markdown('Zr₆ 노드의 Zr를 다른 금속으로 바꾸고 **CHGNet**으로 원자 위치 · 격자를 이완한 뒤, '
-                    '각 금속의 순수 결정 에너지(μ)와 비교')
-        st.latex(r'\Delta E = \frac{E(\text{M-MOF}) - E(\text{Zr-MOF}) - 6(\mu_\text{M} - \mu_\text{Zr})}{6}')
 
 def b2():
     top3, B = _finalists(), data.stage_b()
-    _header('B-2', '수정한 MOF를 같은 AI로 다시 채점', 'A 단계와 같은 잣대 (같은 평균 · 표준편차)',
-            'ML · Random Forest + 점수 규칙')
+    _header('B-2', '같은 AI로 다시 채점', 'ML · Random Forest + 점수 규칙')
     names = top3.name.tolist()
     par = st.segmented_control('원본', names, default=names[0], key='b2_parent') or names[0]
     group = B[B.parent == par].sort_values('total', ascending=False)
@@ -142,17 +131,14 @@ def final():
     A, B = data.stage_a(), data.stage_b()
     win = B.iloc[0]
     parent = A[A.name == win.parent].iloc[0]
-    _header('Final', win['name'], f'{win.parent}의 {win.change} 수정 · 원본·수정 {len(B)}개 중 1위')
-    m = st.columns(4)
+    _header('Final', win['name'])
+    m = st.columns(3)
     m[0].metric('최종 점수 / 200', f'{win.total:.1f}', f'{win.total - parent.total:+.1f} (원본 대비)')
     m[1].metric('안정성 / 100', f'{win.stability:.1f}')
     m[2].metric('포집 · 탈착 · 재사용', f'{win.capture:.0f} · {win.desorption:.0f} · {win.reuse:.0f}')
-    m[3].metric('A 단계 평가 수', f'{len(A):,}')
     f1, f2 = st.columns([1.4, 1], gap='large')
     with f1:
         viewer.crystal(data.pipeline_cif(win.id), '볼 & 스틱', 1, True, True, height=440, highlight=['Zr', 'O'])
     with f2:
         _score_bars(B.head(5), height=300)
-        ui.kv([('원본', f'{win.parent} ({parent.total:.1f}점)'), ('수정', win.detail)])
-    st.download_button('최종 MOF 구조 (CIF)', data.pipeline_cif(win.id), file_name=f'{win.id}.cif',
-                       icon=':material/download:')
+    st.download_button('CIF', data.pipeline_cif(win.id), file_name=f'{win.id}.cif', icon=':material/download:')
