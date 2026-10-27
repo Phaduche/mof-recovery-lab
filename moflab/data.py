@@ -79,15 +79,6 @@ def pipeline_stats():
 def final_pick():
     return json.loads((DATA / 'pipeline/final.json').read_text())
 
-def score_mof(water_prob, metal, pld_A=None, gsa_m2_g=None, open_metal_site=None, group_effect='0',
-              thermal_C=None, base_stable=None):
-    """200-point score of one MOF on the stage-A scale, plus where it would rank in stage A."""
-    from . import pipeline
-    raw = pipeline.raw_scores(water_prob, metal, pld_A, gsa_m2_g, open_metal_site, group_effect, thermal_C, base_stable)
-    row = pipeline.score(pd.DataFrame([{'water_prob': water_prob or 0.0, **raw}]), pipeline_stats()).iloc[0]
-    rank = int((stage_a().total > row.total).sum()) + 1
-    return row, rank
-
 @st.cache_data
 def pipeline_cif(structure_id):
     folder = (DATA / 'pipeline/structures').resolve()

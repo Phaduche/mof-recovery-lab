@@ -10,7 +10,7 @@ import streamlit as st
 
 PACKAGE = Path(__file__).resolve().parent
 # Modules that import siblings go last, so `from .data import ...` picks up the reloaded module.
-LAST = ['data', 'viewer', 'ui']
+LAST = ['data', 'viewer', 'ui', 'steps']
 
 def _loaded():
     names = [n.split('.', 1)[1] for n in sys.modules if n.startswith('moflab.') and n != __name__]
