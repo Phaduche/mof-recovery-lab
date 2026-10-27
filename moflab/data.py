@@ -11,7 +11,6 @@ from .descriptors import FEATURES
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'data'
 MODELS = ROOT / 'models'
-EXPERIMENT_DOC = 'https://docs.google.com/document/d/1vxpzNFfKXFvV6KkGYU8D0JXRZ9S28gkWapIRNVsO5w8/edit'  # 1-week AI-validation experiment plan (Google Docs)
 
 # AlphaFold-style confidence bands, applied to the water-stability probability.
 BANDS = [(0.85, '매우 높음', '#0053D6'), (0.70, '높음', '#65CBF3'),

@@ -8,7 +8,6 @@ as the database it came from.
 """
 import math
 import numpy as np
-import pandas as pd
 
 WEIGHTS = {'stability': 100, 'capture': 40, 'desorption': 35, 'reuse': 25}
 LABELS = {'stability': '안정성', 'capture': '포집', 'desorption': '탈착', 'reuse': '재사용'}
