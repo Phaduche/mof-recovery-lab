@@ -13,6 +13,7 @@ with left:
         st.switch_page(st.session_state['step_pages']['a1'])
     if b2.button('Final 보기', icon=':material/emoji_events:', width='stretch'):
         st.switch_page(st.session_state['step_pages']['final'])
+    st.link_button('AI 검증 실험 계획 (Google Docs)', data.EXPERIMENT_DOC, icon=':material/science:')
 with right:
     viewer.crystal(data.pipeline_cif(best['id']), '스틱', 1, False, True, height=400, highlight=['Zr'], frame=False)
     st.markdown(f"<p class='note' style='text-align:center'>Final · <b>{best['name']}</b> · {best['total']} / 200</p>",

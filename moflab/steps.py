@@ -154,5 +154,7 @@ def final():
     with f2:
         _score_bars(B.head(5), height=300)
         ui.kv([('원본', f'{win.parent} ({parent.total:.1f}점)'), ('수정', win.detail)])
-    st.download_button('최종 MOF 구조 (CIF)', data.pipeline_cif(win.id), file_name=f'{win.id}.cif',
-                       icon=':material/download:')
+    d1, d2, _ = st.columns([1, 1, 2])
+    d1.download_button('최종 MOF 구조 (CIF)', data.pipeline_cif(win.id), file_name=f'{win.id}.cif',
+                       icon=':material/download:', width='stretch')
+    d2.link_button('AI 검증 실험 계획', data.EXPERIMENT_DOC, icon=':material/science:', width='stretch')

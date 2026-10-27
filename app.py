@@ -17,7 +17,6 @@ pages = {
     ],
     '연구': [
         st.Page('views/home.py', title='소개', icon=':material/info:'),
-        st.Page('views/experiment.py', title='실험 계획', icon=':material/science:'),
         st.Page('views/methods.py', title='방법 · 모델', icon=':material/model_training:'),
         st.Page('views/sources.py', title='데이터 출처', icon=':material/database:'),
     ],
