@@ -9,10 +9,10 @@ with left:
             f'AI로 {len(A):,}개 MOF를 200점 만점으로 채점하고, 상위 3개를 고쳐 다시 채점해 최적 MOF를 골랐습니다.')
     st.write('')
     b1, b2, _ = st.columns([1, 1, 0.6])
-    if b1.button('파이프라인 보기', icon=':material/route:', type='primary', width='stretch'):
-        st.switch_page('views/pipeline.py')
-    if b2.button('점수 계산', icon=':material/biotech:', width='stretch'):
-        st.switch_page('views/tool.py')
+    if b1.button('A-1부터 보기', icon=':material/route:', type='primary', width='stretch'):
+        st.switch_page(st.session_state['step_pages']['a1'])
+    if b2.button('Final 보기', icon=':material/emoji_events:', width='stretch'):
+        st.switch_page(st.session_state['step_pages']['final'])
 with right:
     viewer.crystal(data.pipeline_cif(best['id']), '스틱', 1, False, True, height=400, highlight=['Zr'], frame=False)
     st.markdown(f"<p class='note' style='text-align:center'>Final · <b>{best['name']}</b> · {best['total']} / 200</p>",
