@@ -36,13 +36,13 @@ c1, c2 = st.columns(2)
 with c1:
     fpr, tpr, _ = roc_curve(oof.stable_label, oof.oof_probability)
     fig = go.Figure()
-    fig.add_scatter(x=fpr, y=tpr, name='RF', line=dict(color='#1f77b4', width=2))
-    fig.add_scatter(x=[0, 1], y=[0, 1], name='무작위', line=dict(color='#999', dash='dot'))
+    fig.add_scatter(x=fpr, y=tpr, name='RF', line=dict(color='#58a6ff', width=2))
+    fig.add_scatter(x=[0, 1], y=[0, 1], name='무작위', line=dict(color='#8b949e', dash='dot'))
     fig.update_layout(title='ROC 곡선', height=330, xaxis_title='위양성률', yaxis_title='민감도', showlegend=False)
     st.plotly_chart(fig, width='stretch')
 with c2:
     imp = data.feature_importance()
-    fig = px.bar(imp, x='importance', y='feature', orientation='h', color_discrete_sequence=['#1f77b4'],
+    fig = px.bar(imp, x='importance', y='feature', orientation='h', color_discrete_sequence=['#58a6ff'],
                  labels={'importance': '중요도', 'feature': ''})
     fig.update_layout(title='어떤 특성을 많이 봤나', height=330)
     st.plotly_chart(fig, width='stretch')
