@@ -14,14 +14,14 @@ def crystal(cif_text, style='볼 & 스틱', supercell=1, unit_cell=True, spin=Fa
     payload = json.dumps(cif_text).replace('</', '<\\/')  # never close the <script> early
     style_js = json.dumps(STYLES.get(style, STYLES['볼 & 스틱']))
     hl = json.dumps(highlight or [])
-    box = 'background:#fff;border:1px solid #ccc' if frame else 'background:transparent'
-    hint = ('<div style="position:absolute;left:8px;bottom:6px;font:12px Arial,sans-serif;color:#666">'
+    box = 'background:#111;border:1px solid #333' if frame else 'background:transparent'
+    hint = ('<div style="position:absolute;left:8px;bottom:6px;font:11px sans-serif;color:#999">'
             '드래그: 회전 / 스크롤: 확대</div>') if frame else ''
     html = f"""
 <div id="wrap" style="position:relative;width:100%;height:{height}px;overflow:hidden;{box}">
   <div id="v" style="width:100%;height:100%"></div>
   <div id="msg" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-       font:14px Arial,sans-serif;color:#555">구조를 불러오는 중…</div>
+       font:13px sans-serif;color:#999">구조를 불러오는 중…</div>
   {hint}
 </div>
 <script src="{_3DMOL}"></script>
@@ -35,7 +35,7 @@ def crystal(cif_text, style='볼 & 스틱', supercell=1, unit_cell=True, spin=Fa
     viewer.setStyle({{}}, {style_js});
     const hl = {hl};
     if (hl.length) viewer.setStyle({{elem: hl}}, {{sphere: {{scale: 0.45}}, stick: {{radius: 0.16}}}});
-    if ({str(bool(unit_cell)).lower()}) viewer.addUnitCell(m, {{box: {{color: '#000000'}},
+    if ({str(bool(unit_cell)).lower()}) viewer.addUnitCell(m, {{box: {{color: '#999'}},
         astyle: {{hidden: true}}, bstyle: {{hidden: true}}, cstyle: {{hidden: true}}}});
     if ({int(supercell)} > 1) viewer.replicateUnitCell({int(supercell)}, {int(supercell)}, {int(supercell)}, m);
     viewer.zoomTo(); viewer.render();

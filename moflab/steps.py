@@ -4,14 +4,13 @@ import streamlit as st
 from . import data, ui, viewer
 from .pipeline import LABELS, WEIGHTS
 
-COLORS = {'stability': '#1f77b4', 'capture': '#ff7f0e', 'desorption': '#2ca02c', 'reuse': '#d62728'}
+COLORS = {'stability': '#636efa', 'capture': '#EF553B', 'desorption': '#00cc96', 'reuse': '#ab63fa'}
 STEPS = ['A-1', 'A-2', 'A-3', 'B-1', 'B-2', 'Final']
 TABLE_COLS = {'rank': '순위', 'name': 'MOF', 'source': '출처', 'metal': '금속', 'change': '종류', 'detail': '수정 내용',
               'total': '총점', 'stability': '안정성', 'capture': '포집', 'desorption': '탈착', 'reuse': '재사용'}
 
 def _header(step, title, ai=None):
-    path = ' → '.join(f'<b>{s}</b>' if s == step else s for s in STEPS)
-    st.markdown(f'<div class="steps">{path}</div>', unsafe_allow_html=True)
+    st.caption(' > '.join(f'[{s}]' if s == step else s for s in STEPS))
     st.title(title)
     if ai:
         st.caption(f'모델: {ai}')
@@ -44,7 +43,7 @@ def a1():
         col.metric(src, f'{n:,}개')
     cols[-1].metric('합계', f'{len(A):,}개')
     metals = A.metal.value_counts().head(12)
-    fig = go.Figure(go.Bar(x=metals.index, y=metals.values, marker_color='#1f77b4'))
+    fig = go.Figure(go.Bar(x=metals.index, y=metals.values, marker_color='#636efa'))
     fig.update_layout(title='금속별 MOF 수', height=300)
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
 
@@ -54,9 +53,9 @@ def a2():
     w = st.columns(4)
     for col, k in zip(w, WEIGHTS):
         col.metric(LABELS[k], f'{WEIGHTS[k]}점')
-    fig = go.Figure(go.Histogram(x=A.total, nbinsx=50, marker_color='#1f77b4'))
+    fig = go.Figure(go.Histogram(x=A.total, nbinsx=50, marker_color='#636efa'))
     for _, r in A.head(3).iterrows():
-        fig.add_vline(x=r.total, line_color='#000', line_dash='dot')
+        fig.add_vline(x=r.total, line_color='#ccc', line_dash='dot')
     fig.update_layout(title='총점 분포 (점선 = 상위 3개)', height=280, xaxis_title='총점 / 200')
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
     q = st.text_input('검색', placeholder='MOF 이름 · 금속 (예: UiO-66, Zr)', label_visibility='collapsed')
@@ -98,14 +97,14 @@ def b1():
 
     st.subheader('원소 교체 에너지 (Zr 기준)')
     swap = data.metal_swap().sort_values('swap_energy_eV')
-    ox_color = {4: '#1f77b4', 3: '#ff7f0e', 2: '#2ca02c', 1: '#d62728'}
+    ox_color = {4: '#636efa', 3: '#EF553B', 2: '#00cc96', 1: '#ab63fa'}
     fig = go.Figure(go.Bar(x=swap.metal, y=swap.swap_energy_eV, marker_color=[ox_color[o] for o in swap.oxidation_state],
                            text=[f'{v:+.2f}' for v in swap.swap_energy_eV], textposition='outside',
                            customdata=swap.oxidation_state, hovertemplate='%{x} (+%{customdata}가) · %{y:+.2f} eV<extra></extra>'))
-    fig.add_hline(y=0, line_color='#000', line_width=1)
+    fig.add_hline(y=0, line_color='#ccc', line_width=1)
     fig.update_layout(height=340, yaxis_title='eV / 금속', xaxis_title=None)
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
-    st.caption('막대 색 = 금속 산화수: 파랑 +4, 주황 +3, 초록 +2, 빨강 +1')
+    st.caption('막대 색 = 금속 산화수: 파랑 +4, 빨강 +3, 초록 +2, 보라 +1')
 
 def b2():
     top3, B = _finalists(), data.stage_b()
@@ -116,7 +115,7 @@ def b2():
     base = group[group.change == '원본'].total.iloc[0]
     delta = group.total - base
     fig = go.Figure(go.Bar(x=delta, y=group.name, orientation='h', text=[f'{d:+.1f}' for d in delta],
-                           marker_color=['#1f77b4' if d > 0 else '#bbbbbb' if d == 0 else '#d62728' for d in delta],
+                           marker_color=['#636efa' if d > 0 else '#666' if d == 0 else '#EF553B' for d in delta],
                            textposition='outside'))
     fig.update_layout(title=f'원본({base:.1f}점) 대비 점수 변화', height=80 + 26 * len(group),
                       yaxis=dict(autorange='reversed', title=None), xaxis_title='점수 변화')
@@ -128,7 +127,7 @@ def final():
     win = B.iloc[0]
     parent = A[A.name == win.parent].iloc[0]
     _header('Final', win['name'])
-    m = st.columns(3)
+    m = st.columns([1, 1, 1.4])
     m[0].metric('최종 점수 / 200', f'{win.total:.1f}', f'{win.total - parent.total:+.1f} (원본 대비)')
     m[1].metric('안정성 / 100', f'{win.stability:.1f}')
     m[2].metric('포집 · 탈착 · 재사용', f'{win.capture:.0f} · {win.desorption:.0f} · {win.reuse:.0f}')
