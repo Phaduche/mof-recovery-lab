@@ -1,23 +1,11 @@
 [theme]
 base="light"
-primaryColor="#0053D6"
+primaryColor="#1f77b4"
 backgroundColor="#FFFFFF"
-secondaryBackgroundColor="#F3F6FA"
-textColor="#13263A"
-font="MOFKorean, sans-serif"
+secondaryBackgroundColor="#F2F2F2"
+textColor="#000000"
+font="sans serif"
 codeFont="monospace"
-
-[[theme.fontFaces]]
-family="MOFKorean"
-url="app/static/fonts/NanumGothic-Regular.woff2"
-weight=400
-style="normal"
-
-[[theme.fontFaces]]
-family="MOFKorean"
-url="app/static/fonts/NanumGothic-Bold.woff2"
-weight=700
-style="normal"
 
 [server]
 maxUploadSize=15

@@ -4,21 +4,17 @@ import streamlit as st
 from . import data, ui, viewer
 from .pipeline import LABELS, WEIGHTS
 
-COLORS = {'stability': '#0053D6', 'capture': '#24A0C8', 'desorption': '#2BB673', 'reuse': '#FFB020'}
+COLORS = {'stability': '#1f77b4', 'capture': '#ff7f0e', 'desorption': '#2ca02c', 'reuse': '#d62728'}
 STEPS = ['A-1', 'A-2', 'A-3', 'B-1', 'B-2', 'Final']
 TABLE_COLS = {'rank': '순위', 'name': 'MOF', 'source': '출처', 'metal': '금속', 'change': '종류', 'detail': '수정 내용',
               'total': '총점', 'stability': '안정성', 'capture': '포집', 'desorption': '탈착', 'reuse': '재사용'}
 
 def _header(step, title, ai=None):
-    chips = ''.join(
-        f"<span class='pill' style='background:{'#0053D6' if s == step else '#EEF2F6'};"
-        f"color:{'#fff' if s == step else '#62758A'}'>{s}</span>" + ('' if s == 'Final' else
-                                                                    "<span style='color:#B8C2CC'>→ </span>")
-        for s in STEPS)
-    st.markdown(f'<div style="margin-bottom:10px">{chips}</div>', unsafe_allow_html=True)
+    path = ' → '.join(f'<b>{s}</b>' if s == step else s for s in STEPS)
+    st.markdown(f'<div class="steps">{path}</div>', unsafe_allow_html=True)
     st.title(title)
     if ai:
-        st.markdown(ui.pill(f'🤖 {ai}', '#F2EEFC', '#5B3FB0'), unsafe_allow_html=True)
+        st.caption(f'모델: {ai}')
 
 def _score_bars(frame, height=None):
     """Stacked horizontal bars: the four parts of the 200-point score."""
@@ -48,7 +44,7 @@ def a1():
         col.metric(src, f'{n:,}개')
     cols[-1].metric('합계', f'{len(A):,}개')
     metals = A.metal.value_counts().head(12)
-    fig = go.Figure(go.Bar(x=metals.index, y=metals.values, marker_color='#9DB8D9'))
+    fig = go.Figure(go.Bar(x=metals.index, y=metals.values, marker_color='#1f77b4'))
     fig.update_layout(title='금속별 MOF 수', height=300)
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
 
@@ -58,9 +54,9 @@ def a2():
     w = st.columns(4)
     for col, k in zip(w, WEIGHTS):
         col.metric(LABELS[k], f'{WEIGHTS[k]}점')
-    fig = go.Figure(go.Histogram(x=A.total, nbinsx=50, marker_color='#65A0E0'))
+    fig = go.Figure(go.Histogram(x=A.total, nbinsx=50, marker_color='#1f77b4'))
     for _, r in A.head(3).iterrows():
-        fig.add_vline(x=r.total, line_color='#0053D6', line_dash='dot')
+        fig.add_vline(x=r.total, line_color='#000', line_dash='dot')
     fig.update_layout(title='총점 분포 (점선 = 상위 3개)', height=280, xaxis_title='총점 / 200')
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
     q = st.text_input('검색', placeholder='MOF 이름 · 금속 (예: UiO-66, Zr)', label_visibility='collapsed')
@@ -102,14 +98,14 @@ def b1():
 
     st.subheader('원소 교체 에너지 (Zr 기준)')
     swap = data.metal_swap().sort_values('swap_energy_eV')
-    ox_color = {4: '#0053D6', 3: '#24A0C8', 2: '#FFB020', 1: '#E5484D'}
+    ox_color = {4: '#1f77b4', 3: '#ff7f0e', 2: '#2ca02c', 1: '#d62728'}
     fig = go.Figure(go.Bar(x=swap.metal, y=swap.swap_energy_eV, marker_color=[ox_color[o] for o in swap.oxidation_state],
                            text=[f'{v:+.2f}' for v in swap.swap_energy_eV], textposition='outside',
                            customdata=swap.oxidation_state, hovertemplate='%{x} (+%{customdata}가) · %{y:+.2f} eV<extra></extra>'))
-    fig.add_hline(y=0, line_color='#0F2236', line_width=1)
+    fig.add_hline(y=0, line_color='#000', line_width=1)
     fig.update_layout(height=340, yaxis_title='eV / 금속', xaxis_title=None)
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
-    st.markdown(' '.join(ui.pill(f'+{o}가', c + '22', '#0F2236') for o, c in ox_color.items()), unsafe_allow_html=True)
+    st.caption('막대 색 = 금속 산화수: 파랑 +4, 주황 +3, 초록 +2, 빨강 +1')
 
 def b2():
     top3, B = _finalists(), data.stage_b()
@@ -120,7 +116,7 @@ def b2():
     base = group[group.change == '원본'].total.iloc[0]
     delta = group.total - base
     fig = go.Figure(go.Bar(x=delta, y=group.name, orientation='h', text=[f'{d:+.1f}' for d in delta],
-                           marker_color=['#0053D6' if d > 0 else '#C9D4DF' if d == 0 else '#FF7D45' for d in delta],
+                           marker_color=['#1f77b4' if d > 0 else '#bbbbbb' if d == 0 else '#d62728' for d in delta],
                            textposition='outside'))
     fig.update_layout(title=f'원본({base:.1f}점) 대비 점수 변화', height=80 + 26 * len(group),
                       yaxis=dict(autorange='reversed', title=None), xaxis_title='점수 변화')
@@ -141,4 +137,4 @@ def final():
         viewer.crystal(data.pipeline_cif(win.id), '볼 & 스틱', 1, True, True, height=440, highlight=['Zr', 'O'])
     with f2:
         _score_bars(B.head(5), height=300)
-    st.download_button('CIF', data.pipeline_cif(win.id), file_name=f'{win.id}.cif', icon=':material/download:')
+    st.download_button('CIF 다운로드', data.pipeline_cif(win.id), file_name=f'{win.id}.cif')
