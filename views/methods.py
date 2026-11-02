@@ -3,9 +3,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from sklearn.metrics import roc_curve
-from moflab import data
+from moflab import data, ui
 
-st.title('방법 · 모델')
+ui.header('methods')
+st.title('방법과 모델')
 val = data.validation()
 oof = data.oof_predictions()
 

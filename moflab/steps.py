@@ -9,11 +9,12 @@ STEPS = ['A-1', 'A-2', 'A-3', 'B-1', 'B-2', 'Final']
 TABLE_COLS = {'rank': '순위', 'name': 'MOF', 'source': '출처', 'metal': '금속', 'change': '종류', 'detail': '수정 내용',
               'total': '총점', 'stability': '안정성', 'capture': '포집', 'desorption': '탈착', 'reuse': '재사용'}
 
+PATHS = {'A-1': 'a1', 'A-2': 'a2', 'A-3': 'a3', 'B-1': 'b1', 'B-2': 'b2', 'Final': 'final'}
+
 def _header(step, title, ai=None):
-    st.caption(' > '.join(f'[{s}]' if s == step else s for s in STEPS))
+    ui.header(PATHS[step])
     st.title(title)
-    if ai:
-        st.caption(f'모델: {ai}')
+    st.caption(' > '.join(f'[{s}]' if s == step else s for s in STEPS) + (f'   모델: {ai}' if ai else ''))
 
 def _score_bars(frame, height=None):
     """Stacked horizontal bars: the four parts of the 200-point score."""
@@ -55,7 +56,7 @@ def a2():
         col.metric(LABELS[k], f'{WEIGHTS[k]}점')
     fig = go.Figure(go.Histogram(x=A.total, nbinsx=50, marker_color='#636efa'))
     for _, r in A.head(3).iterrows():
-        fig.add_vline(x=r.total, line_color='#ccc', line_dash='dot')
+        fig.add_vline(x=r.total, line_color='#d62728', line_dash='dot')
     fig.update_layout(title='총점 분포 (점선 = 상위 3개)', height=280, xaxis_title='총점 / 200')
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
     q = st.text_input('검색', placeholder='MOF 이름 · 금속 (예: UiO-66, Zr)', label_visibility='collapsed')
@@ -101,7 +102,7 @@ def b1():
     fig = go.Figure(go.Bar(x=swap.metal, y=swap.swap_energy_eV, marker_color=[ox_color[o] for o in swap.oxidation_state],
                            text=[f'{v:+.2f}' for v in swap.swap_energy_eV], textposition='outside',
                            customdata=swap.oxidation_state, hovertemplate='%{x} (+%{customdata}가) · %{y:+.2f} eV<extra></extra>'))
-    fig.add_hline(y=0, line_color='#ccc', line_width=1)
+    fig.add_hline(y=0, line_color='#000', line_width=1)
     fig.update_layout(height=340, yaxis_title='eV / 금속', xaxis_title=None)
     st.plotly_chart(fig, width='stretch', config={'displayModeBar': False})
     st.caption('막대 색 = 금속 산화수: 파랑 +4, 빨강 +3, 초록 +2, 보라 +1')
