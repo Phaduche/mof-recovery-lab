@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-3 최고점 3개</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.34.0/plotly.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
+<script src="site.js"></script>
+</head>
+<body>
+<div id="nav"></div>
+<h1>A-3. 최고점 3개</h1>
+<p class="small">A-1 &gt; A-2 &gt; A-3 &gt; B-1 &gt; B-2 &gt; Final</p>
+<div id="bars"></div>
+<h2>구조 보기</h2>
+<p id="pick"></p>
+<div class="cols">
+  <div><div id="viewer" class="viewer" style="height:420px"></div><p class="small">드래그: 회전 / 스크롤: 확대</p></div>
+  <div id="info"></div>
+</div>
+<p><a href="b1.html">다음: B-1 링커와 원소 바꾸기 →</a></p>
+<div id="footer"></div>
+<script>
+loadJSON('data/stage_a.json').then(a => {
+  const top3 = a.slice(0, 3);
+  scoreBars('bars', top3);
+  const pick = document.getElementById('pick');
+  pick.innerHTML = top3.map((r, i) => `<label><input type="radio" name="mof" value="${i}" ${i ? '' : 'checked'}> ${esc(r.name)}</label> `).join(' ');
+  function show(i) {
+    const r = top3[i];
+    crystal('viewer', `data/structures/${r.id.split(':')[1]}.cif`);
+    table(document.getElementById('info'), [
+      { k: '순위', v: `${r.rank}위` }, { k: '총점', v: `${fmt1(r.total)} / 200` }, { k: '출처', v: r.source }, { k: '금속', v: r.metal },
+      { k: '안정성 / 포집 / 탈착 / 재사용', v: `${fmt1(r.stability)} / ${fmt1(r.capture)} / ${fmt1(r.desorption)} / ${fmt1(r.reuse)}` },
+      { k: '기공 (PLD)', v: `${fmt1(r.pld)} Å` }, { k: '표면적', v: `${Math.round(r.gsa).toLocaleString()} m²/g` }],
+      [['k', '항목'], ['v', '값']]);
+  }
+  pick.querySelectorAll('input').forEach(el => el.addEventListener('change', () => show(+el.value)));
+  show(0);
+});
+</script>
+</body>
+</html>

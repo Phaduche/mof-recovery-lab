@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B-2 같은 AI로 다시 채점</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.34.0/plotly.min.js"></script>
+<script src="site.js"></script>
+</head>
+<body>
+<div id="nav"></div>
+<h1>B-2. 같은 AI로 다시 채점</h1>
+<p class="small">A-1 &gt; A-2 &gt; A-3 &gt; B-1 &gt; B-2 &gt; Final · 모델: ML (Random Forest) + 점수 규칙</p>
+<p>원본 3개와 수정본 39개를 A-2와 같은 기준으로 다시 채점했습니다.</p>
+<p>원본 <span id="pick"></span></p>
+<div id="delta"></div>
+<h2>전체 결과</h2>
+<div id="table"></div>
+<p><a href="final.html">다음: Final →</a></p>
+<div id="footer"></div>
+<script>
+loadJSON('data/stage_b.json').then(b => {
+  const parents = [...new Set(b.map(r => r.parent))];
+  const pick = document.getElementById('pick');
+  pick.innerHTML = parents.map((p, i) => `<label><input type="radio" name="p" value="${esc(p)}" ${i ? '' : 'checked'}> ${esc(p)}</label>`).join(' ');
+  function show(parent) {
+    const g = b.filter(r => r.parent === parent).sort((x, y) => y.total - x.total);
+    const base = g.find(r => r.change === '원본').total;
+    const d = g.map(r => r.total - base);
+    Plotly.newPlot('delta', [{ type: 'bar', orientation: 'h', y: g.map(r => r.name), x: d,
+      text: d.map(v => (v > 0 ? '+' : '') + v.toFixed(1)), textposition: 'outside',
+      marker: { color: d.map(v => v > 0 ? '#1f77b4' : v === 0 ? '#999' : '#d62728') } }],
+      { title: `원본 (${base.toFixed(1)}점) 대비 점수 변화`, height: 80 + 26 * g.length, margin: { l: 170, r: 40, t: 40, b: 40 },
+        yaxis: { autorange: 'reversed' }, xaxis: { title: '점수 변화' }, font: { family: 'sans-serif' } }, { displayModeBar: false, responsive: true });
+  }
+  pick.querySelectorAll('input').forEach(el => el.addEventListener('change', () => show(el.value)));
+  show(parents[0]);
+  table(document.getElementById('table'), b, [['rank', '순위'], ['name', 'MOF'], ['change', '종류'], ['detail', '수정 내용'],
+    ['total', '총점', fmt1], ['stability', '안정성', fmt1], ['capture', '포집', fmt1], ['desorption', '탈착', fmt1], ['reuse', '재사용', fmt1]]);
+});
+</script>
+</body>
+</html>
