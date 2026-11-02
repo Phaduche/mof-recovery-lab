@@ -1,7 +1,8 @@
 import pandas as pd
 import streamlit as st
-from moflab import data
+from moflab import data, ui
 
+ui.header('sources')
 st.title('데이터 출처')
 roles = {'core2025': '3D 구조(CIF)·기공 특성·AI 예측 대상', 'core2019': '구조 보고 근거·기하 메타데이터',
          'qmof': '전자구조 메타데이터·실험/가상 구분', 'mofsimplify': 'AI 학습용 문헌 물 안정성 라벨',

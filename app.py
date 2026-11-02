@@ -23,4 +23,5 @@ pages = {
 }
 # Keyed explicitly: the default page reports an empty url_path.
 st.session_state['step_pages'] = dict(zip(['a1', 'a2', 'a3', 'b1', 'b2', 'final'], pages['']))
-st.navigation(pages, position='top').run()
+st.navigation(pages, position='hidden').run()
+ui.footer()

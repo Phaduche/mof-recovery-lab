@@ -5,6 +5,8 @@ import streamlit as st
 from sklearn.metrics import roc_curve
 from moflab import data
 
+from moflab import ui
+ui.header('methods')
 st.title('방법 · 모델')
 val = data.validation()
 oof = data.oof_predictions()
@@ -36,13 +38,13 @@ c1, c2 = st.columns(2)
 with c1:
     fpr, tpr, _ = roc_curve(oof.stable_label, oof.oof_probability)
     fig = go.Figure()
-    fig.add_scatter(x=fpr, y=tpr, name='RF', line=dict(color='#636efa', width=2))
+    fig.add_scatter(x=fpr, y=tpr, name='RF', line=dict(color='#346aff', width=2))
     fig.add_scatter(x=[0, 1], y=[0, 1], name='무작위', line=dict(color='#999', dash='dot'))
     fig.update_layout(title='ROC 곡선', height=330, xaxis_title='위양성률', yaxis_title='민감도', showlegend=False)
     st.plotly_chart(fig, width='stretch')
 with c2:
     imp = data.feature_importance()
-    fig = px.bar(imp, x='importance', y='feature', orientation='h', color_discrete_sequence=['#636efa'],
+    fig = px.bar(imp, x='importance', y='feature', orientation='h', color_discrete_sequence=['#346aff'],
                  labels={'importance': '중요도', 'feature': ''})
     fig.update_layout(title='어떤 특성을 많이 봤나', height=330)
     st.plotly_chart(fig, width='stretch')
