@@ -15,6 +15,7 @@
 <ul>
   <li><a href="a1.html">A-1부터 순서대로 보기</a></li>
   <li><a href="final.html">최종 선정 MOF 바로 보기</a></li>
+  <li><a id="predict-link" href="#">내 MOF 채점하기 (AI 예측, Streamlit 앱)</a> — 특성 12개를 넣으면 같은 AI로 200점을 매깁니다.</li>
 </ul>
 
 <div class="cols">
@@ -47,6 +48,7 @@ loadJSON('data/final.json').then(f => {
   document.getElementById('final-caption').textContent = `${f.name} · ${f.total} / 200점 (원본 ${f.parent})`;
   crystal('viewer', `data/structures/${f.id}.cif`, { spin: true, cell: false });
 });
+document.getElementById('predict-link').href = `${STREAMLIT}/predict`;
 loadJSON('data/stage_a.json').then(a => { document.getElementById('count').textContent = a.length.toLocaleString(); });
 </script>
 </body>
