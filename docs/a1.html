@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-1 데이터베이스에서 MOF 가져오기</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.34.0/plotly.min.js"></script>
+<script src="site.js"></script>
+</head>
+<body>
+<div id="nav"></div>
+<h1>A-1. 데이터베이스에서 MOF 가져오기</h1>
+<p class="small">A-1 &gt; A-2 &gt; A-3 &gt; B-1 &gt; B-2 &gt; Final</p>
+<p>공개 데이터베이스 두 곳에서 MOF를 모았습니다. 둘 다 실험으로 보고된 구조입니다.</p>
+<div id="counts"></div>
+<h2>금속별 MOF 수</h2>
+<div id="metals"></div>
+<p><a href="a2.html">다음: A-2 AI로 채점하기 →</a></p>
+<div id="footer"></div>
+<script>
+loadJSON('data/stage_a.json').then(a => {
+  const bySource = {};
+  a.forEach(r => { bySource[r.source] = (bySource[r.source] || 0) + 1; });
+  const rows = Object.entries(bySource).map(([source, n]) => ({ source, n }));
+  rows.push({ source: '합계', n: a.length });
+  table(document.getElementById('counts'), rows, [['source', '출처'], ['n', 'MOF 수', v => v.toLocaleString()]]);
+  const byMetal = {};
+  a.forEach(r => { if (r.metal) byMetal[r.metal] = (byMetal[r.metal] || 0) + 1; });
+  const top = Object.entries(byMetal).sort((x, y) => y[1] - x[1]).slice(0, 12);
+  Plotly.newPlot('metals', [{ type: 'bar', x: top.map(t => t[0]), y: top.map(t => t[1]), marker: { color: '#1f77b4' } }],
+    { height: 320, margin: { l: 40, r: 10, t: 10, b: 40 }, font: { family: 'sans-serif' } }, { displayModeBar: false, responsive: true });
+});
+</script>
+</body>
+</html>

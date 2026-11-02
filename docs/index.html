@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOF Recovery Lab</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
+<script src="site.js"></script>
+</head>
+<body>
+<div id="nav"></div>
+<h1>버려지는 인(P)을 다시 모으는 MOF</h1>
+<p>AI로 MOF <span id="count">3,657</span>개를 채점해 인(P)을 붙잡았다가 다시 떼어내는 데 가장 알맞은 MOF를 찾았습니다.</p>
+<ul>
+  <li><a href="a1.html">A-1부터 순서대로 보기</a></li>
+  <li><a href="final.html">최종 선정 MOF 바로 보기</a></li>
+</ul>
+
+<div class="cols">
+<div>
+<h2>왜 인(P)인가</h2>
+<ul>
+  <li>대체할 수 없는 자원이다. 합성할 수 없고, 한국은 거의 전량 수입한다.</li>
+  <li>한 번 쓰면 끝이다. 하천과 바다로 흘러가 회수되지 않는다.</li>
+  <li>농축된 곳에서 회수한다. 하수처리장 반류수처럼 인이 진한 물이 대상이다.</li>
+</ul>
+<h2>연구 순서</h2>
+<ol>
+  <li>A-1 데이터베이스에서 MOF를 가져온다.</li>
+  <li>A-2 AI로 200점 만점 채점을 한다.</li>
+  <li>A-3 최고점 3개를 고른다.</li>
+  <li>B-1 링커와 원소를 바꾼다.</li>
+  <li>B-2 같은 AI로 다시 채점한다.</li>
+  <li>Final 가장 점수가 높은 MOF를 고른다.</li>
+</ol>
+</div>
+<div>
+<h2>최종 선정 MOF</h2>
+<div id="viewer" class="viewer"></div>
+<p class="small" id="final-caption"></p>
+</div>
+</div>
+<div id="footer"></div>
+<script>
+loadJSON('data/final.json').then(f => {
+  document.getElementById('final-caption').textContent = `${f.name} · ${f.total} / 200점 (원본 ${f.parent})`;
+  crystal('viewer', `data/structures/${f.id}.cif`, { spin: true, cell: false });
+});
+loadJSON('data/stage_a.json').then(a => { document.getElementById('count').textContent = a.length.toLocaleString(); });
+</script>
+</body>
+</html>

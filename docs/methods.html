@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>방법과 모델</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.34.0/plotly.min.js"></script>
+<script src="site.js"></script>
+</head>
+<body>
+<div id="nav"></div>
+<h1>방법과 모델</h1>
+
+<h2>인산염이 MOF에 붙는 원리</h2>
+<ul>
+  <li>리간드 교환: Zr–OH 자리에 인산염이 결합한다 (Zr–O–P).</li>
+  <li>인력: –NH₂가 수소결합을 하고, 산성에서는 양전하를 띤다.</li>
+  <li>탈착: 묽은 염기가 인산염을 밀어낸다.</li>
+</ul>
+
+<h2>어떤 AI를 쓰나</h2>
+<table>
+  <tr><th>단계</th><th>종류</th><th>모델</th><th>배운 것</th><th>DFT 실행</th></tr>
+  <tr><td>A-2, B-2 안정성</td><td>ML (머신러닝)</td><td>Random Forest 분류기, 결정 트리 180개 (지도학습)</td><td>문헌 실험 물 안정성 1,081개</td><td>안 함</td></tr>
+  <tr><td>A-2, B-2 포집, 탈착, 재사용</td><td>AI 아님, 점수 규칙</td><td>화학 규칙 + 통계 (z-score)</td><td>—</td><td>안 함</td></tr>
+  <tr><td>B-1 원소 바꾸기</td><td>DL (딥러닝)</td><td>CHGNet, 그래프 신경망(GNN), 41만 개 파라미터</td><td>Materials Project DFT 계산 약 158만 개 구조 (MPtrj)</td><td>안 함 (DFT 결과로 학습한 근사)</td></tr>
+  <tr><td>B-1 링커 바꾸기</td><td>ML 결과 활용</td><td>UiO-66 변형체의 Random Forest 점수 변화를 적용</td><td>—</td><td>안 함</td></tr>
+  <tr><td>DFT (참고)</td><td>양자역학 계산</td><td>—</td><td>—</td><td>직접</td></tr>
+</table>
+
+<h2>물 안정성 모델</h2>
+<div id="metrics"></div>
+<div class="cols">
+  <div><div id="roc"></div></div>
+  <div><div id="imp"></div></div>
+</div>
+<div id="folds"></div>
+
+<h2>점수 (200점)</h2>
+<table>
+  <tr><th>항목</th><th>배점</th><th>평가</th><th>AI가 보는 것</th></tr>
+  <tr><td>안정성</td><td>100</td><td>절대평가</td><td>Random Forest 물 안정성 확률 × 100</td></tr>
+  <tr><td>포집</td><td>40</td><td>상대평가 (z)</td><td>금속의 인산염 결합력 × 표면적, 기공 통과 + 작용기 전하 + 열린 금속 자리</td></tr>
+  <tr><td>탈착</td><td>35</td><td>상대평가 (z)</td><td>결합의 되돌림 쉬움(금속) × 기공 크기</td></tr>
+  <tr><td>재사용</td><td>25</td><td>상대평가 (z)</td><td>물 안정성, 열분해 온도, 염기 안정성</td></tr>
+</table>
+<p>z = (x − μ<sub>A</sub>) / σ<sub>A</sub>, 점수 = 배점 × Φ(z / 2). μ<sub>A</sub>, σ<sub>A</sub>는 A 단계 3,657개의 평균과 표준편차, Φ는 표준정규분포의 누적함수입니다.</p>
+<div id="footer"></div>
+<script>
+loadJSON('data/validation.json').then(v => {
+  table(document.getElementById('metrics'), [
+    { k: '학습 데이터', v: `${v.training_rows.toLocaleString()}개` },
+    { k: 'ROC-AUC', v: `${v.metrics.roc_auc.toFixed(2)} (무작위 0.50)` },
+    { k: '균형 정확도', v: v.metrics.balanced_accuracy.toFixed(2) },
+    { k: '정확도', v: v.metrics.accuracy.toFixed(2) },
+    { k: '검증', v: '같은 계열이 학습과 시험에 섞이지 않는 그룹 5-fold' },
+    { k: '모델 설정', v: `트리 ${v.parameters.n_estimators}개, 최대 깊이 ${v.parameters.max_depth}, 잎 최소 샘플 ${v.parameters.min_samples_leaf}, ${v.parameters.class_weight}` }],
+    [['k', '항목'], ['v', '값']]);
+  Plotly.newPlot('roc', [
+    { x: v.roc.fpr, y: v.roc.tpr, name: 'Random Forest', line: { color: '#1f77b4', width: 2 } },
+    { x: [0, 1], y: [0, 1], name: '무작위', line: { color: '#999', dash: 'dot' } }],
+    { title: 'ROC 곡선', height: 330, margin: { l: 50, r: 10, t: 40, b: 40 }, xaxis: { title: '위양성률' }, yaxis: { title: '민감도' },
+      showlegend: false, font: { family: 'sans-serif' } }, { displayModeBar: false, responsive: true });
+  Plotly.newPlot('imp', [{ type: 'bar', orientation: 'h', y: v.importance.map(i => i.feature), x: v.importance.map(i => i.value), marker: { color: '#2ca02c' } }],
+    { title: '어떤 특성을 많이 봤나', height: 330, margin: { l: 110, r: 10, t: 40, b: 40 }, xaxis: { title: '중요도' }, font: { family: 'sans-serif' } },
+    { displayModeBar: false, responsive: true });
+  table(document.getElementById('folds'), v.folds, [['fold', 'fold'], ['auc', 'ROC-AUC', x => x.toFixed(2)], ['balacc', '균형 정확도', x => x.toFixed(2)]]);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데이터 출처</title>
+<link rel="stylesheet" href="style.css">
+<script src="site.js"></script>
+</head>
+<body>
+<div id="nav"></div>
+<h1>데이터 출처</h1>
+<div id="table"></div>
+<h2>인용</h2>
+<ul>
+  <li>Zhao, G. et al. <i>CoRE MOF 2025 Dataset</i>, Zenodo 15621349 (CC BY 4.0)</li>
+  <li>Chung, Y. G. et al. <i>CoRE MOF 2019 Dataset</i>, Zenodo 3370144 (CC BY 4.0)</li>
+  <li>Rosen, A. S. et al. <i>Matter</i> 4, 1578 (2021); <i>npj Comput. Mater.</i> 8, 112 (2022) — QMOF</li>
+  <li>Nandy, A. et al. <i>Sci. Data</i> 9, 74 (2022) — MOFSimplify</li>
+  <li>Burner, J. et al. <i>ARC-MOF</i>, Zenodo 16802743 (CC BY 4.0)</li>
+  <li>Nandy, A. et al. <i>Ultrastable MOF building blocks</i>, Zenodo 7666081 (CC BY 4.0)</li>
+  <li>Terrones, G. et al. <i>J. Am. Chem. Soc.</i> (2024), doi:10.1021/jacs.4c05879 — WS24</li>
+  <li>Burtch, N. C. et al. <i>Chem. Rev.</i> 114, 10575 (2014) — 물 안정성 등급</li>
+  <li>Deng, B. et al. <i>Nat. Mach. Intell.</i> 5, 1031 (2023) — CHGNet</li>
+  <li>3D 표시: 3Dmol.js (Rego &amp; Koes, <i>Bioinformatics</i> 2015)</li>
+</ul>
+<div id="footer"></div>
+<script>
+const ROLES = { core2025: '3D 구조(CIF), 기공 특성, AI 예측 대상', core2019: '구조 보고 근거, 기하 메타데이터',
+  qmof: '전자구조 메타데이터, 실험/가상 구분', mofsimplify: 'AI 학습용 문헌 물 안정성 라벨',
+  arc: '기하 특성 시범 부분집합 (앞 500행)', ultrastable: '노드, 링커 구성 단위 참고' };
+loadJSON('data/sources.json').then(src => {
+  table(document.getElementById('table'), src, [['name', '출처'], ['source_id', '역할', v => ROLES[v] || ''],
+    ['records', '수록 건수', v => Number(v).toLocaleString()], ['version', '버전'], ['license', '이용 조건'],
+    ['url', '링크', v => v ? `<a href="${esc(v)}">열기</a>` : '']]);
+});
+</script>
+</body>
+</html>

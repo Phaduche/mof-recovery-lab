@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-2 AI로 200점 만점 채점</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.34.0/plotly.min.js"></script>
+<script src="site.js"></script>
+</head>
+<body>
+<div id="nav"></div>
+<h1>A-2. AI로 200점 만점 채점</h1>
+<p class="small">A-1 &gt; A-2 &gt; A-3 &gt; B-1 &gt; B-2 &gt; Final · 모델: ML (Random Forest) + 점수 규칙</p>
+<table>
+  <tr><th>안정성</th><th>포집</th><th>탈착</th><th>재사용</th></tr>
+  <tr><td>100점 (절대평가, Random Forest 확률 × 100)</td><td>40점 (상대평가 z)</td><td>35점 (상대평가 z)</td><td>25점 (상대평가 z)</td></tr>
+</table>
+<h2>총점 분포</h2>
+<p class="small">점선 = 상위 3개</p>
+<div id="hist"></div>
+<h2>채점 결과</h2>
+<p><input id="q" type="search" placeholder="MOF 이름이나 금속으로 검색 (예: UiO-66, Zr)" size="40"> <span id="n" class="small"></span></p>
+<div id="table"></div>
+<p><a href="a3.html">다음: A-3 최고점 3개 →</a></p>
+<div id="footer"></div>
+<script>
+loadJSON('data/stage_a.json').then(a => {
+  const top3 = a.slice(0, 3);
+  Plotly.newPlot('hist', [{ type: 'histogram', x: a.map(r => r.total), nbinsx: 50, marker: { color: '#1f77b4' } }],
+    { height: 300, margin: { l: 40, r: 10, t: 10, b: 40 }, xaxis: { title: '총점 / 200' }, font: { family: 'sans-serif' },
+      shapes: top3.map(r => ({ type: 'line', x0: r.total, x1: r.total, y0: 0, y1: 1, yref: 'paper', line: { color: '#d62728', dash: 'dot' } })) },
+    { displayModeBar: false, responsive: true });
+  const cols = [['rank', '순위'], ['name', 'MOF'], ['source', '출처'], ['metal', '금속'], ['total', '총점', fmt1],
+    ['stability', '안정성', fmt1], ['capture', '포집', fmt1], ['desorption', '탈착', fmt1], ['reuse', '재사용', fmt1]];
+  const q = document.getElementById('q');
+  const params = new URLSearchParams(location.search);
+  if (params.get('q')) q.value = params.get('q');
+  function show() {
+    const s = q.value.trim().toLowerCase();
+    const rows = s ? a.filter(r => (r.name + ' ' + r.metal).toLowerCase().includes(s)) : a;
+    document.getElementById('n').textContent = `${rows.length.toLocaleString()}개` + (rows.length > 300 ? ' (상위 300개만 표시)' : '');
+    table(document.getElementById('table'), rows.slice(0, 300), cols);
+  }
+  q.addEventListener('input', show); show();
+});
+</script>
+</body>
+</html>
