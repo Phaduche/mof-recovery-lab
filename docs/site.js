@@ -2,6 +2,8 @@
 const PAGES = [['a1.html', 'A-1 데이터'], ['a2.html', 'A-2 채점'], ['a3.html', 'A-3 최종 3개'],
   ['b1.html', 'B-1 수정'], ['b2.html', 'B-2 재채점'], ['final.html', 'Final']];
 const RESEARCH = [['index.html', '소개'], ['methods.html', '방법과 모델'], ['sources.html', '데이터 출처']];
+// Live computation (Random Forest prediction for a MOF the visitor describes) runs in the Streamlit app.
+const STREAMLIT = 'https://mof-recovery-lab.streamlit.app';
 const WEIGHTS = { stability: 100, capture: 40, desorption: 35, reuse: 25 };
 const LABELS = { stability: '안정성', capture: '포집', desorption: '탈착', reuse: '재사용' };
 const COLORS = { stability: '#1f77b4', capture: '#ff7f0e', desorption: '#2ca02c', reuse: '#d62728' };
@@ -11,7 +13,7 @@ function nav() {
   const row = items => items.map(([p, t]) => p === here ? `<b>${t}</b>` : `<a href="${p}">${t}</a>`).join(' | ');
   document.getElementById('nav').innerHTML =
     `<b>MOF Recovery Lab</b> · 옹기종기 · KJWP 2026<br>${row(PAGES)}<br>${row(RESEARCH)} | ` +
-    `<a href="https://github.com/Phaduche/mof-recovery-lab">GitHub</a><hr>`;
+    `<a href="${STREAMLIT}/predict">AI 예측 (내 MOF 채점, Streamlit)</a> | <a href="https://github.com/Phaduche/mof-recovery-lab">GitHub</a><hr>`;
   const f = document.getElementById('footer');
   if (f) f.innerHTML = '<hr><small>데이터: CoRE MOF 2025 (CC BY 4.0), MOFSimplify / WS24 · 모델: Random Forest, CHGNet · 3D: 3Dmol.js<br>' +
     '점수는 연구용 예측값이며 실험으로 검증 중입니다.</small>';

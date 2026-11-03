@@ -56,3 +56,9 @@ def test_top_menu_is_the_pipeline():
     at = AppTest.from_file(str(ROOT / 'app.py'), default_timeout=60).run()
     assert not at.exception, [e.message for e in at.exception]
     assert list(at.session_state['step_pages']) == STEPS
+
+def test_predict_page_scores_the_example():
+    at = AppTest.from_file(str(ROOT / 'views/predict.py'), default_timeout=60).run()
+    at.button[0].click().run()
+    assert not at.exception, [e.message for e in at.exception]
+    assert any('총점' in m.label for m in at.metric)

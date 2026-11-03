@@ -20,6 +20,9 @@ pages = {
         st.Page('views/methods.py', title='방법 · 모델'),
         st.Page('views/sources.py', title='데이터 출처'),
     ],
+    '도구': [
+        st.Page('views/predict.py', title='AI 예측', url_path='predict'),
+    ],
 }
 # Keyed explicitly: the default page reports an empty url_path.
 st.session_state['step_pages'] = dict(zip(['a1', 'a2', 'a3', 'b1', 'b2', 'final'], pages['']))
