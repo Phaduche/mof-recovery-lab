@@ -1,4 +1,4 @@
-// Shared bits for every page: the link row at the top, the footer, data loading, small helpers.
+// Shared bits for every page: the link row at the top, data loading, small helpers.
 const PAGES = [['a1.html', 'A-1 데이터'], ['a2.html', 'A-2 채점'], ['a3.html', 'A-3 최종 3개'],
   ['b1.html', 'B-1 수정'], ['b2.html', 'B-2 재채점'], ['final.html', 'Final']];
 const RESEARCH = [['index.html', '소개'], ['methods.html', '방법과 모델'], ['sources.html', '데이터 출처']];
@@ -12,11 +12,8 @@ function nav() {
   const here = location.pathname.split('/').pop() || 'index.html';
   const row = items => items.map(([p, t]) => p === here ? `<b>${t}</b>` : `<a href="${p}">${t}</a>`).join(' | ');
   document.getElementById('nav').innerHTML =
-    `<b>MOF Recovery Lab</b> · 옹기종기 · KJWP 2026<br>${row(PAGES)}<br>${row(RESEARCH)} | ` +
+    `<b>MOF Recovery Lab</b><br>${row(PAGES)}<br>${row(RESEARCH)} | ` +
     `<a href="${STREAMLIT}/predict">AI 예측 (내 MOF 채점, Streamlit)</a> | <a href="https://github.com/Phaduche/mof-recovery-lab">GitHub</a><hr>`;
-  const f = document.getElementById('footer');
-  if (f) f.innerHTML = '<hr><small>데이터: CoRE MOF 2025 (CC BY 4.0), MOFSimplify / WS24 · 모델: Random Forest, CHGNet · 3D: 3Dmol.js<br>' +
-    '점수는 연구용 예측값이며 실험으로 검증 중입니다.</small>';
 }
 
 const loadJSON = path => fetch(path).then(r => r.json());

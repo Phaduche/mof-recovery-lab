@@ -12,13 +12,11 @@
 <body>
 <div id="nav"></div>
 <h1 id="title">Final</h1>
-<p class="small">A-1 &gt; A-2 &gt; A-3 &gt; B-1 &gt; B-2 &gt; Final</p>
 <div id="summary"></div>
 <div class="cols">
   <div><div id="viewer" class="viewer" style="height:440px"></div><p class="small">드래그: 회전 / 스크롤: 확대 · <a id="cif" download>CIF 파일 내려받기</a></p></div>
   <div><h2>수정본 상위 5개</h2><div id="bars"></div></div>
 </div>
-<div id="footer"></div>
 <script>
 Promise.all([loadJSON('data/stage_a.json'), loadJSON('data/stage_b.json')]).then(([a, b]) => {
   const win = b[0];
