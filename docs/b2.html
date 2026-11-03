@@ -11,14 +11,12 @@
 <body>
 <div id="nav"></div>
 <h1>B-2. 같은 AI로 다시 채점</h1>
-<p class="small">A-1 &gt; A-2 &gt; A-3 &gt; B-1 &gt; B-2 &gt; Final · 모델: ML (Random Forest) + 점수 규칙</p>
 <p>원본 3개와 수정본 39개를 A-2와 같은 기준으로 다시 채점했습니다.</p>
 <p>원본 <span id="pick"></span></p>
 <div id="delta"></div>
 <h2>전체 결과</h2>
 <div id="table"></div>
 <p><a href="final.html">다음: Final →</a></p>
-<div id="footer"></div>
 <script>
 loadJSON('data/stage_b.json').then(b => {
   const parents = [...new Set(b.map(r => r.parent))];
