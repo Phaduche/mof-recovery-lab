@@ -70,6 +70,13 @@
 - 각 행은 building_block입니다. 완성된 MOF 136종이 아니며 후보 검색에서 실제 MOF만 필터링할 때 제외됩니다. 안정한 구성 단위를 결합하면 완성 구조도 안정하거나 합성 가능하다는 보장은 없습니다.
 - 새 소재 연구의 구성 단위 참고용으로 사용합니다. 임의의 조합에 기존 물 안정성 점수나 성능값을 복사하지 않습니다.
 
+## 검증 재실행용 표 (`data/validation/`)
+
+`run_ai.py`가 인터넷이나 로컬 연구용 SQLite 없이 돌아가도록, 위 두 출처에서 필요한 부분만 작은 표로 옮겼습니다.
+
+- `water_labels.csv`: MOFSimplify 원자료(위 고정 커밋)에서 이름, `water_label`, 고정한 12개 특성을 고른 1,092행입니다. `run_ai.py`는 저장된 계열 배정(`models/water_oof_predictions.csv`)에 있는 1,081개만 골라 교차검증을 다시 하고, "처음 모델" 비교에는 정리하기 전 원자료를 그대로 씁니다. 원본 MIT 라이선스 전문은 같은 폴더의 `MOFSimplify_LICENSE.txt`에 있습니다.
+- `core2025_water_external.csv`: CoRE MOF 2025(CC BY 4.0) CR 구조 가운데, 출처가 제공한 물 안정성 값(`core_water`, 출처 쪽 예측값)과 12개 모델 입력 특성을 모두 갖춘 497개입니다. 학습에 쓰지 않은 외부 검증용이며, `core_water`가 0.5 이상이면 안정으로 봅니다.
+
 ## 화면 글꼴
 
 한국어가 설치되지 않은 운영체제에서도 읽을 수 있도록 Nanum Gothic 글꼴을 함께 제공합니다. 원본은 Google Fonts의 <https://github.com/google/fonts/tree/main/ofl/nanumgothic>에서 받았으며 배포 크기를 줄이기 위해 TTF를 WOFF2 형식으로 변환했습니다. 글리프 디자인은 바꾸지 않았습니다. 원본 저작권과 SIL Open Font License는 `static/fonts/OFL.txt`에 있습니다. 앱은 포함한 글꼴을 로컬에서 제공하며 실행 때 외부 글꼴 서버에 접속하지 않습니다.

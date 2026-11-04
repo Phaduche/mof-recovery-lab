@@ -35,6 +35,16 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+## 검증 다시 실행
+
+```bash
+python run_ai.py
+```
+
+저장된 모델(`models/`)과 `data/validation/`의 표 두 개로 계열별 5-fold 교차검증, A 단계 채점, B 단계 재채점,
+외부 코호트 검증을 한 번에 다시 계산합니다. 노트북에서 2초 안팎이 걸리고, 연구결과보고서의 숫자
+(ROC-AUC 0.804, 최종 MOF 185.0점, 균형 정확도 0.77에서 0.81)가 그대로 나옵니다.
+
 ## Streamlit Community Cloud 배포
 
 1. <https://share.streamlit.io> 에 GitHub 계정으로 로그인
@@ -65,6 +75,7 @@ streamlit run app.py
 
 ```
 app.py                  내비게이션
+run_ai.py               전체 AI 과정 재실행 (교차검증부터 외부 검증까지)
 views/                  페이지
 moflab/                 데이터 로딩 · 3D 뷰어 · UI · 점수 규칙 · 물질수지
 data/catalog.parquet    CoRE MOF 2025 후보 + 예측값
@@ -72,6 +83,7 @@ data/cifs/*.cif.gz      3D 구조 2,737개 (gzip)
 data/variants/          UiO-66 변형체 19종 (문헌 라벨 + CIF) · 최종 순위
 data/finalists/         MOFSimplify 실행 결과 · 예측 예시용 descriptor
 models/                 물 안정성 RF 모델 · 검증 기록 · OOF 예측
+data/validation/        재실행용 표: MOFSimplify 물 안정성 라벨, CoRE MOF 2025 외부 코호트 497개
 ```
 
 ## 모델에 대해 정직하게
