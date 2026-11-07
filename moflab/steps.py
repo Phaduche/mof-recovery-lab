@@ -5,15 +5,16 @@ from . import data, ui, viewer
 from .pipeline import LABELS, WEIGHTS
 
 COLORS = {'stability': '#636efa', 'capture': '#EF553B', 'desorption': '#00cc96', 'reuse': '#ab63fa'}
-STEPS = ['A-1', 'A-2', 'A-3', 'B-1', 'B-2', 'Final']
 TABLE_COLS = {'rank': '순위', 'name': 'MOF', 'source': '출처', 'metal': '금속', 'change': '종류', 'detail': '수정 내용',
               'total': '총점', 'stability': '안정성', 'capture': '포집', 'desorption': '탈착', 'reuse': '재사용'}
 
-def _header(step, title, ai=None):
-    st.caption(' > '.join(f'[{s}]' if s == step else s for s in STEPS))
+def _header(title, intro, ai=None):
+    """Page title, the model used (if any) and a plain explanation for first-time visitors."""
     st.title(title)
     if ai:
         st.caption(f'모델: {ai}')
+    for para in intro:
+        st.markdown(para)
 
 def _score_bars(frame, height=None):
     """Stacked horizontal bars: the four parts of the 200-point score."""
@@ -36,8 +37,14 @@ def _finalists():
 
 def a1():
     A = data.stage_a()
-    _header('A-1', '데이터베이스에서 MOF 가져오기')
     counts = A.source.value_counts()
+    _header('데이터베이스에서 MOF 가져오기', [
+        '인산염을 붙잡았다가 다시 떼어 낼 MOF를 찾기 위해, 먼저 후보가 될 MOF를 공개 데이터베이스 두 곳에서 모으는 단계다.',
+        f'CoRE MOF 2025는 실제로 합성되었다고 보고된 MOF 구조를 모은 데이터베이스이고({counts.get("CoRE MOF 2025", 0):,}개), '
+        f'MOFSimplify(WS24)는 물 안정성 실험 결과가 붙어 있는 MOF 모음이다({counts.get("MOFSimplify (WS24)", 0):,}개). '
+        f'둘을 합친 {len(A):,}개가 다음 단계에서 채점할 후보다.',
+        '아래 그래프는 후보들을 금속 종류별로 센 것이다. 금속은 MOF 뼈대의 마디(노드)를 이루고, 인산염이 달라붙는 자리가 된다.',
+    ])
     cols = st.columns(len(counts) + 1)
     for col, (src, n) in zip(cols, counts.items()):
         col.metric(src, f'{n:,}개')
@@ -49,7 +56,15 @@ def a1():
 
 def a2():
     A = data.stage_a()
-    _header('A-2', 'AI로 200점 만점 채점', 'ML · Random Forest + 점수 규칙')
+    _header('AI로 200점 만점 채점', [
+        f'모은 {len(A):,}개 각각에 200점 만점 점수를 매기는 단계다. 점수는 물 안정성(100점), 인 포집(40점), 탈착(35점), '
+        '재사용(25점)을 더한 값이다.',
+        '물 안정성은 논문 실험값으로 학습한 Random Forest가 예측한 "물속에서 구조가 유지될 확률"에 100을 곱한 점수다. '
+        '나머지 세 항목은 금속과 인산염의 결합력, 표면적, 기공 크기 같은 화학 원리로 값을 계산한 뒤, '
+        f'{len(A):,}개 가운데 얼마나 위쪽에 있는지로 점수를 매겼다.',
+        '그래프는 총점이 어떻게 퍼져 있는지 보여 주고, 점선은 가장 높은 3개다. 아래 검색창에 MOF 이름이나 금속(예: Zr)을 '
+        '넣으면 표에서 항목별 점수를 볼 수 있다.',
+    ], 'ML · Random Forest + 점수 규칙')
     w = st.columns(4)
     for col, k in zip(w, WEIGHTS):
         col.metric(LABELS[k], f'{WEIGHTS[k]}점')
@@ -64,7 +79,15 @@ def a2():
 
 def a3():
     top3 = _finalists()
-    _header('A-3', '최고점 3개')
+    listed = ', '.join(f'{r["name"]} {r.total:.1f}점' for _, r in top3.iterrows())
+    zr_only = (top3.metal == 'Zr').all()
+    _header('최고점 3개', [
+        f'A-2에서 총점이 가장 높은 3개를 고르는 단계다. {listed}이다.'
+        + (' 셋 다 지르코늄(Zr) MOF다. Zr⁴⁺ 이온은 전하가 크고 단단해서 링커와 강하게 결합하기 때문에, '
+           '물 분자가 끼어들어도 구조가 잘 무너지지 않는다.' if zr_only else ''),
+        '막대는 총점이 네 항목으로 어떻게 나뉘는지 보여 준다. 아래에서 MOF 이름을 누르면 3D 구조와 기공 크기(PLD), '
+        '표면적이 나온다. 구조는 마우스로 끌어서 돌리고, 스크롤로 확대할 수 있다.',
+    ])
     _score_bars(top3)
     names = top3.name.tolist()
     pick = st.segmented_control('MOF', names, default=names[0], key='a3_pick') or names[0]
@@ -78,7 +101,19 @@ def a3():
 
 def b1():
     top3, B = _finalists(), data.stage_b()
-    _header('B-1', '링커 · 원소 바꾸기', 'DL · CHGNet 그래프 신경망')
+    mods = B[B.change != '원본']
+    n_link = mods[mods.change == '링커'].groupby('parent').size().max()
+    n_metal = mods[mods.change == '원소'].groupby('parent').size().max()
+    swap_n = len(data.metal_swap()) - 1
+    _header('링커 · 원소 바꾸기', [
+        f'상위 3개를 더 좋게 만들 수 있는지 컴퓨터로 구조를 바꿔 보는 단계다. 링커에 작용기 {n_link}종'
+        '(–NH₂, –OH, –NO₂, –COOH, –SO₃H, –F, –CH₃)을 붙이거나, 마디의 금속 Zr을 다른 금속 '
+        f'{n_metal}종(Hf, Ce, Th, Ti, Fe, Al)으로 바꿨다. 3개마다 {n_link + n_metal}가지씩, 모두 {len(mods)}개다.',
+        '아래에서 원본 MOF와 수정 내용을 고르면 원본과 바꾼 구조를 나란히 볼 수 있다.',
+        '아래 그래프는 금속을 바꿨을 때 에너지가 얼마나 달라지는지(ΔE, 금속 1개당)를 딥러닝 모델 CHGNet으로 계산한 것이다. '
+        f'같은 Zr 마디를 가진 UiO-66-NH₂에서 Zr을 금속 {swap_n}종으로 바꿔 계산했고, 0보다 작으면 Zr보다 에너지가 낮아 '
+        '더 안정하다는 뜻이다.',
+    ], 'DL · CHGNet 그래프 신경망')
     names = top3.name.tolist()
     p1, p2 = st.columns([1, 2])
     par = p1.selectbox('원본 MOF', names, key='b1_parent')
@@ -108,7 +143,13 @@ def b1():
 
 def b2():
     top3, B = _finalists(), data.stage_b()
-    _header('B-2', '같은 AI로 다시 채점', 'ML · Random Forest + 점수 규칙')
+    n_mod = int((B.change != '원본').sum())
+    _header('같은 AI로 다시 채점', [
+        f'B-1에서 만든 {n_mod}개를 원본 3개와 함께, A-2와 똑같은 AI와 기준으로 다시 채점하는 단계다. '
+        '같은 기준으로 매겨야 원본보다 나아졌는지 바로 비교할 수 있다.',
+        '아래에서 원본 MOF를 고르면, 바꾼 구조들이 원본보다 몇 점 오르거나 내렸는지 막대로 보여 준다. '
+        f'파란색은 오른 것, 빨간색은 내린 것이다. 아래 표에는 {len(B)}개 전체의 순위와 항목별 점수가 있다.',
+    ], 'ML · Random Forest + 점수 규칙')
     names = top3.name.tolist()
     par = st.segmented_control('원본', names, default=names[0], key='b2_parent') or names[0]
     group = B[B.parent == par].sort_values('total', ascending=False)
@@ -126,7 +167,15 @@ def final():
     A, B = data.stage_a(), data.stage_b()
     win = B.iloc[0]
     parent = A[A.name == win.parent].iloc[0]
-    _header('Final', win['name'])
+    why = ''
+    if '–OH' in win['name'] and win.capture > parent.capture and win.stability > parent.stability:
+        why = ' –OH는 인산염과 수소 결합을 할 수 있어서 인 포집 점수가 올랐고, 물 안정성 점수도 함께 올랐다.'
+    _header(win['name'], [
+        f'B-2에서 점수가 가장 높은 구조를 최종 MOF로 고르는 단계다. 최종 MOF는 {win["name"]}({win.total:.1f}점)으로, '
+        f'원본 {parent["name"]}({parent.total:.1f}점)보다 {win.total - parent.total:.1f}점 높았다.' + why,
+        '아래 숫자는 총점과 항목별 점수다. 그 밑 왼쪽에서 최종 MOF의 3D 구조를 돌려 볼 수 있고, 오른쪽 막대는 점수 상위 5개다. '
+        '아래 버튼으로 구조 파일(CIF)을 내려받을 수 있다.',
+    ])
     m = st.columns([1, 1, 1.4])
     m[0].metric('최종 점수 / 200', f'{win.total:.1f}', f'{win.total - parent.total:+.1f} (원본 대비)')
     m[1].metric('안정성 / 100', f'{win.stability:.1f}')
