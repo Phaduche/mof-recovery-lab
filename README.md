@@ -2,7 +2,7 @@
 
 옹기종기 · 2026 대한민국 청소년 물 대상(KJWP) 본선
 
-웹사이트: https://phaduche.github.io/mof-recovery-lab/
+웹사이트: https://mof-recovery-lab-mlr7ytqcewuefmaper4fwu.streamlit.app/
 
 - 하수처리장 반류수처럼 인이 진한 물에서 인산염을 붙잡았다가 다시 떼어 쓸 수 있는 MOF를 AI로 찾았다.
 - 공개 데이터베이스의 MOF 3,657개를 물 안정성, 인 포집, 탈착, 재사용을 합친 200점 만점으로 채점했다.
@@ -15,7 +15,7 @@
 ```bash
 pip install -r requirements.txt
 python run_ai.py       # 교차검증부터 외부 검증까지 다시 계산 (보고서 숫자와 같음)
-streamlit run app.py   # AI 예측 앱
+streamlit run app.py   # 웹사이트를 내 컴퓨터에서 실행
 ```
 
 데이터 출처와 라이선스는 [DATA_SOURCES.md](DATA_SOURCES.md)에 있다.
