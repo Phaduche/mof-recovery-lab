@@ -45,3 +45,25 @@ def crystal(cif_text, style='볼 & 스틱', supercell=1, unit_cell=True, spin=Fa
 }})();
 </script>"""
     components.html(html, height=height + 8)
+
+
+def molecule(text, fmt='sdf', metals=None, height=300):
+    """Render one molecule or cluster ('sdf' or 'xyz'); `metals` are drawn as larger spheres."""
+    payload = json.dumps(text).replace('</', '<\\/')
+    html = f"""
+<div style="position:relative;width:100%;height:{height}px;background:#111;border:1px solid #333">
+  <div id="v" style="width:100%;height:100%"></div>
+  <div style="position:absolute;left:8px;bottom:6px;font:11px sans-serif;color:#999">드래그: 회전 / 스크롤: 확대</div>
+</div>
+<script src="{_3DMOL}"></script>
+<script>
+(function() {{
+  const viewer = $3Dmol.createViewer('v', {{backgroundAlpha: 0}});
+  viewer.addModel({payload}, '{fmt}');
+  viewer.setStyle({{}}, {{stick: {{radius: 0.14}}, sphere: {{scale: 0.22}}}});
+  const metals = {json.dumps(metals or [])};
+  if (metals.length) viewer.setStyle({{elem: metals}}, {{stick: {{radius: 0.14}}, sphere: {{scale: 0.45}}}});
+  viewer.zoomTo(); viewer.render();
+}})();
+</script>"""
+    components.html(html, height=height + 8)

@@ -77,6 +77,12 @@
 - `water_labels.csv`: MOFSimplify 원자료(위 고정 커밋)에서 이름, `water_label`, 고정한 12개 특성을 고른 1,092행입니다. `run_ai.py`는 저장된 계열 배정(`models/water_oof_predictions.csv`)에 있는 1,081개만 골라 교차검증을 다시 하고, "처음 모델" 비교에는 정리하기 전 원자료를 그대로 씁니다. 원본 MIT 라이선스 전문은 같은 폴더의 `MOFSimplify_LICENSE.txt`에 있습니다.
 - `core2025_water_external.csv`: CoRE MOF 2025(CC BY 4.0) CR 구조 가운데, 출처가 제공한 물 안정성 값(`core_water`, 출처 쪽 예측값)과 12개 모델 입력 특성을 모두 갖춘 497개입니다. 학습에 쓰지 않은 외부 검증용이며, `core_water`가 0.5 이상이면 안정으로 봅니다.
 
+## AI 예측 페이지의 노드와 링커 (`data/predict/`)
+
+- `catalog.json`: 금속 노드 7종, 유기 링커 18종, 그리고 그 둘로 실제로 만들어진 MOF 33개 조합(37개 기록)을 손으로 정리한 표입니다. 각 MOF는 A 단계 표(`data/pipeline/stage_a.parquet`)의 한 행을 `id`로 가리키므로, 페이지에 나오는 점수와 순위는 데이터베이스 채점 결과 그대로입니다. 표에 없는 조합에는 점수를 만들어 내지 않습니다.
+- `nodes/*.sdf`: 이 저장소에 이미 있는 결정 구조에서 노드 하나를 잘라 낸 좌표입니다. Zr₆는 `data/variants/UiO-66.cif`, M₃O는 `data/finalists/MIL100Fe_WS14s.cif`, 나머지는 CoRE MOF 2025(CC BY 4.0) CIF(`data/cifs/`의 MOF-5, ZIF-8, HKUST-1, MIL-53(Al), Mg-MOF-74)에서 잘랐습니다. Fe₃O와 Cr₃O, Al₃O처럼 같은 모양의 노드는 한 좌표에 금속 이름만 바꿔 씁니다.
+- `linkers/*.sdf`: `catalog.json`의 SMILES로 RDKit(ETKDG, MMFF)이 만든 3D 좌표입니다. 다시 만들려면 `python -m scripts.build_predict_assets`를 실행합니다(rdkit, pymatgen 필요, 웹앱 실행에는 필요 없음).
+
 ## 화면 글꼴
 
 한국어가 설치되지 않은 운영체제에서도 읽을 수 있도록 Nanum Gothic 글꼴을 함께 제공합니다. 원본은 Google Fonts의 <https://github.com/google/fonts/tree/main/ofl/nanumgothic>에서 받았으며 배포 크기를 줄이기 위해 TTF를 WOFF2 형식으로 변환했습니다. 글리프 디자인은 바꾸지 않았습니다. 원본 저작권과 SIL Open Font License는 `static/fonts/OFL.txt`에 있습니다. 앱은 포함한 글꼴을 로컬에서 제공하며 실행 때 외부 글꼴 서버에 접속하지 않습니다.
