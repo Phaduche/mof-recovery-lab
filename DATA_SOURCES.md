@@ -79,7 +79,7 @@
 
 ## AI 예측 페이지의 노드와 링커 (`data/predict/`)
 
-- `catalog.json`: 금속 노드 7종, 유기 링커 18종, 그리고 그 둘로 실제로 만들어진 MOF 33개 조합(37개 기록)을 손으로 정리한 표입니다. 각 MOF는 A 단계 표(`data/pipeline/stage_a.parquet`)의 한 행을 `id`로 가리키므로, 페이지에 나오는 점수와 순위는 데이터베이스 채점 결과 그대로입니다. 표에 없는 조합에는 점수를 만들어 내지 않습니다.
+- `catalog.json`: 금속 노드 7종, 유기 링커 20종, 그리고 그 둘로 실제로 만들어진 MOF 36개 조합(40개 기록)을 손으로 정리한 표입니다. 각 MOF는 A 단계 표(`data/pipeline/stage_a.parquet`)의 한 행을 `id`로 가리키므로, 페이지에 나오는 점수와 순위는 데이터베이스 채점 결과 그대로입니다. 표에 없는 조합에는 점수를 만들어 내지 않습니다.
 - `nodes/*.sdf`: 이 저장소에 이미 있는 결정 구조에서 노드 하나를 잘라 낸 좌표입니다. Zr₆는 `data/variants/UiO-66.cif`, M₃O는 `data/finalists/MIL100Fe_WS14s.cif`, 나머지는 CoRE MOF 2025(CC BY 4.0) CIF(`data/cifs/`의 MOF-5, ZIF-8, HKUST-1, MIL-53(Al), Mg-MOF-74)에서 잘랐습니다. Fe₃O와 Cr₃O, Al₃O처럼 같은 모양의 노드는 한 좌표에 금속 이름만 바꿔 씁니다.
 - `linkers/*.sdf`: `catalog.json`의 SMILES로 RDKit(ETKDG, MMFF)이 만든 3D 좌표입니다. 다시 만들려면 `python -m scripts.build_predict_assets`를 실행합니다(rdkit, pymatgen 필요, 웹앱 실행에는 필요 없음).
 

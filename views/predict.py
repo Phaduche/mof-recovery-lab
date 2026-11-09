@@ -83,6 +83,8 @@ else:
         st.markdown('**점수가 이렇게 나온 이유**')
         for name, pts, why in builder.explain(row):
             st.markdown(f'- **{name} {pts}**: {why}')
+        for extra in builder.unscored_notes(row):
+            st.markdown(f'- {extra}')
         ui.note('포집과 탈착은 공개 실험 데이터가 없어서 화학 규칙으로 계산한다. 그래서 금속이 같으면 링커를 바꿔도 점수가 '
                 '비슷하고, 노드의 금속이 바뀌면 크게 달라진다. 포집, 탈착, 재사용은 3,657개 안에서의 위치(z-score)를 '
                 '점수로 바꾼 값이다.')
@@ -96,8 +98,30 @@ else:
         else:
             st.caption('이 MOF는 저장소에 3D 결정 구조 파일이 없어서 위의 노드와 링커 그림만 보여 준다.')
 
-st.subheader('4. 다른 조합과 비교')
-st.markdown('노드나 링커를 바꾸면 같은 AI의 점수가 이만큼 달라진다. 막대 색은 금속 노드 종류이고, 테두리가 있는 막대가 지금 고른 MOF다.')
+st.subheader('4. 노드나 링커를 바꾸면')
+st.markdown('PLD는 기공 통로 지름이다. 인산염이 기공 안까지 들어가려면 PLD가 4.8 Å 이상이어야 하고, 그보다 좁으면 겉면에만 붙는다. '
+            '▶ 표시가 지금 고른 MOF다.')
+TABLE = dict(hide_index=True, width='stretch',
+             column_config={'총점': st.column_config.ProgressColumn(min_value=0, max_value=200, format='%.1f'),
+                            '표면적 (m²/g)': st.column_config.NumberColumn(format='%d')})
+same_node = R[(R.node == node_id) & (R.metal == metal)]
+if same_node.linker.nunique() > 1:
+    st.markdown(f"**같은 노드({node['label']}, {metal})에 링커만 바꾼 MOF**")
+    st.caption('작용기가 없어도 링커의 고리 수와 배치가 달라지면 기공 크기와 표면적이 달라지고, 인산염이 들어갈 수 있는지도 달라진다.')
+    st.dataframe(builder.compare_table(same_node, pick_id).drop(columns='금속 노드'), **TABLE)
+same_linker = R[R.linker == linker_id]
+if same_linker[['node', 'metal']].drop_duplicates().shape[0] > 1:
+    st.markdown(f"**같은 링커({link['label']})에 노드만 바꾼 MOF**")
+    st.caption('링커가 같아도 노드가 다르면 물 안정성과 금속의 결합 성질이 달라져서 점수가 크게 달라진다.')
+    st.dataframe(builder.compare_table(same_linker, pick_id).drop(columns=['링커', '링커 고리']), **TABLE)
+same_group = R[[builder.linker(l)['group'] == link['group'] for l in R.linker]]
+if link['group'] != '없음' and same_group.linker.nunique() > 1:
+    st.markdown(f"**작용기({link['group']})는 같지만 링커나 노드가 다른 MOF**")
+    st.caption('작용기가 같아도 링커의 뼈대와 노드가 다르면 기공 크기도, 점수도 다른 MOF가 된다.')
+    st.dataframe(builder.compare_table(same_group, pick_id), **TABLE)
+
+st.markdown('**전체 비교**')
+st.markdown('막대 색은 금속 노드 종류이고, 테두리가 있는 막대가 지금 고른 MOF다.')
 order = R.sort_values('total')
 fig = go.Figure(go.Bar(
     x=order.total, y=order.display, orientation='h',

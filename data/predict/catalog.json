@@ -14,7 +14,8 @@
     "cif": "variants/UiO-66.cif",
     "metal": "Zr",
     "max_metals": 6
-   }
+   },
+   "has_oms": false
   },
   {
    "id": "zn4o",
@@ -30,7 +31,8 @@
     "cif": "cifs/e096826bf8b3bfc31cf9972c.cif.gz",
     "metal": "Zn",
     "max_metals": 4
-   }
+   },
+   "has_oms": false
   },
   {
    "id": "zntet",
@@ -46,7 +48,8 @@
     "cif": "cifs/eb18ecdf51b8344bcac1cfc7.cif.gz",
     "metal": "Zn",
     "max_metals": 1
-   }
+   },
+   "has_oms": false
   },
   {
    "id": "cupw",
@@ -62,7 +65,8 @@
     "cif": "cifs/4ed78954ee0b7dd4afbcd787.cif.gz",
     "metal": "Cu",
     "max_metals": 2
-   }
+   },
+   "has_oms": true
   },
   {
    "id": "mchain",
@@ -79,7 +83,8 @@
     "cif": "cifs/a88f8427da0a0db63b70a95c.cif.gz",
     "metal": "Al",
     "max_metals": 3
-   }
+   },
+   "has_oms": false
   },
   {
    "id": "m3o",
@@ -97,7 +102,8 @@
     "cif": "finalists/MIL100Fe_WS14s.cif",
     "metal": "Fe",
     "max_metals": 3
-   }
+   },
+   "has_oms": true
   },
   {
    "id": "m74",
@@ -116,7 +122,8 @@
     "cif": "cifs/b1617d054d14f84d13b45de3.cif.gz",
     "metal": "Mg",
     "max_metals": 4
-   }
+   },
+   "has_oms": true
   }
  ],
  "linkers": [
@@ -184,6 +191,15 @@
    "about": "BDC 옆에 고리가 하나 더 붙은 모양이다. 튀어나온 고리가 기공을 좁힌다."
   },
   {
+   "id": "ndc26",
+   "label": "2,6-나프탈렌다이카복실산 (2,6-NDC)",
+   "smiles": "OC(=O)c1ccc2cc(ccc2c1)C(=O)O",
+   "arms": "2갈래 (일직선, 김)",
+   "rings": "나프탈렌 (고리 2개가 붙음)",
+   "group": "없음",
+   "about": "1,4-NDC와 원자 구성이 같지만 카복실산이 나프탈렌의 양 끝(2, 6번)에 붙어 있다. 그래서 링커가 길게 뻗어 기공이 훨씬 커진다."
+  },
+  {
    "id": "btc",
    "label": "트라이메스산 (BTC)",
    "smiles": "OC(=O)c1cc(cc(c1)C(=O)O)C(=O)O",
@@ -218,6 +234,15 @@
    "rings": "벤젠 1개",
    "group": "없음",
    "about": "카복실산이 벤젠의 1, 3번 자리에 있어서 굽은 링커다. BDC와 원자 구성은 같지만 모양이 달라서 나선 사슬과 좁은 통로를 만든다(CAU-10)."
+  },
+  {
+   "id": "aipa",
+   "label": "5-아미노아이소프탈산 (NH₂-IPA)",
+   "smiles": "Nc1cc(cc(c1)C(=O)O)C(=O)O",
+   "arms": "2갈래 (120°로 굽음)",
+   "rings": "벤젠 1개",
+   "group": "–NH₂",
+   "about": "–NH₂가 붙은 것은 NH₂-BDC와 같지만, 카복실산이 1, 3번 자리에 있어서 굽은 링커다. 작용기가 같아도 링커 모양이 달라 전혀 다른 MOF가 된다(CAU-10-NH₂)."
   },
   {
    "id": "dobdc",
@@ -574,7 +599,7 @@
      "name": "MIL-100(Fe)"
     }
    ],
-   "structure": null
+   "structure": "finalist:MIL100Fe_WS14s.cif"
   },
   {
    "node": "m3o",
@@ -695,6 +720,42 @@
     }
    ],
    "structure": "core:a86baa45e6746a814c995214"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "ndc26",
+   "records": [
+    {
+     "id": "ws24:UiO-2,6-NDC",
+     "name": "UiO-2,6-NDC (DUT-52)"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "mchain",
+   "metal": "Al",
+   "linker": "aipa",
+   "records": [
+    {
+     "id": "ws24:CAU-10-NH2",
+     "name": "CAU-10-NH₂"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "mchain",
+   "metal": "Al",
+   "linker": "ndc14",
+   "records": [
+    {
+     "id": "ws24:Al_OH_1-4-NDC",
+     "name": "Al(OH)(1,4-NDC)"
+    }
+   ],
+   "structure": null
   }
  ]
 }
