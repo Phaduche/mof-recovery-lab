@@ -90,7 +90,35 @@ def structure_cif(ref):
     if not ref:
         return None
     kind, key = ref.split(':', 1)
+    if kind == 'finalist':
+        folder = (data.DATA / 'finalists').resolve()
+        path = (folder / key).resolve()
+        return path.read_text(errors='replace') if path.is_relative_to(folder) and path.exists() else None
     return {'variant': data.variant_cif, 'core': data.read_cif, 'pipeline': data.pipeline_cif}[kind](key)
+
+
+def compare_table(frame, selected=None):
+    """Side-by-side view of catalog records: parts, pore size and the four scores (▶ marks the chosen MOF)."""
+    f = frame.sort_values('total', ascending=False)
+    return pd.DataFrame({
+        'MOF': [('▶ ' if i == selected else '') + d for i, d in zip(f.rec_id, f.display)],
+        '금속 노드': [f"{node(n)['label']} ({m})" for n, m in zip(f.node, f.metal)],
+        '링커': [linker(l)['label'] for l in f.linker],
+        '링커 고리': [linker(l)['rings'] for l in f.linker],
+        'PLD (Å)': f.pld_A.round(1), '표면적 (m²/g)': f.gsa_m2_g.round(0),
+        '인산염': ['기공 안까지' if p >= pipeline.ACCESS_PLD else '겉면만' for p in f.pld_A],
+        '안정성': f.stability.round(1), '포집': f.capture.round(1), '탈착': f.desorption.round(1),
+        '재사용': f.reuse.round(1), '총점': f.total.round(1)})
+
+
+def unscored_notes(row):
+    """Things the parts suggest but this database row does not carry, so they are not in its score."""
+    notes = []
+    if node(row['node']).get('has_oms') and _na(row['open_metal_site']) is None:
+        notes.append('이 노드에는 열린 금속 자리가 있지만, 이 MOF의 데이터에는 그 표시가 없어서 포집 점수의 가산점(+0.1)은 들어가 있지 않다.')
+    if linker(row['linker'])['group'] in ('–NH₂', '–SO₃H', '–OH 2개') and row['group_effect'] == '0':
+        notes.append('작용기 효과(–NH₂는 +, –SO₃H는 −)는 UiO-66 계열 19종에만 손으로 표시해 둔 값이라, 이 MOF의 포집 점수에는 들어가 있지 않다.')
+    return notes
 
 
 def _na(x):
