@@ -1,0 +1,700 @@
+{
+ "nodes": [
+  {
+   "id": "zr6",
+   "label": "Zr₆ 클러스터",
+   "formula": "Zr₆O₄(OH)₄",
+   "metals": [
+    "Zr"
+   ],
+   "links": "링커 최대 12개",
+   "oms": "보통 없음 (링커가 덜 붙은 MOF-808, NU-1000은 빈자리에 OH나 물이 붙음)",
+   "about": "Zr 6개가 팔면체 모양으로 모이고 O와 OH가 감싼 덩어리다. Zr⁴⁺는 전하가 크고 단단해서 링커의 카복실산 O와 강하게 결합하기 때문에, 물이 들어와도 잘 무너지지 않는다.",
+   "source": {
+    "cif": "variants/UiO-66.cif",
+    "metal": "Zr",
+    "max_metals": 6
+   }
+  },
+  {
+   "id": "zn4o",
+   "label": "Zn₄O 클러스터",
+   "formula": "Zn₄O(COO)₆",
+   "metals": [
+    "Zn"
+   ],
+   "links": "링커 6개",
+   "oms": "없음",
+   "about": "가운데 O 1개를 Zn 4개가 사면체로 둘러싼 덩어리다. 링커 6개가 붙어 정육면체 격자를 만든다(MOF-5). Zn–O 결합은 물 분자가 쉽게 끊어서 물에 약하다.",
+   "source": {
+    "cif": "cifs/e096826bf8b3bfc31cf9972c.cif.gz",
+    "metal": "Zn",
+    "max_metals": 4
+   }
+  },
+  {
+   "id": "zntet",
+   "label": "Zn 사면체 (ZIF)",
+   "formula": "Zn(N)₄",
+   "metals": [
+    "Zn"
+   ],
+   "links": "링커 4개",
+   "oms": "없음",
+   "about": "Zn 1개에 이미다졸 고리의 N 4개가 붙은 사면체다. 제올라이트처럼 생긴 구조(ZIF)를 만든다. 같은 Zn이라도 Zn–N 결합이라서 MOF-5의 Zn₄O보다 물에 훨씬 강하다.",
+   "source": {
+    "cif": "cifs/eb18ecdf51b8344bcac1cfc7.cif.gz",
+    "metal": "Zn",
+    "max_metals": 1
+   }
+  },
+  {
+   "id": "cupw",
+   "label": "Cu₂ 패들휠",
+   "formula": "Cu₂(COO)₄",
+   "metals": [
+    "Cu"
+   ],
+   "links": "링커 4개",
+   "oms": "있음 (용매를 빼면 Cu 위쪽 자리가 빔)",
+   "about": "Cu 2개를 카복실산 4개가 바람개비처럼 묶은 구조다. 용매를 빼면 Cu마다 빈자리(열린 금속 자리)가 생긴다(HKUST-1). 이 빈자리에 물이 붙으면 구조가 서서히 약해진다.",
+   "source": {
+    "cif": "cifs/4ed78954ee0b7dd4afbcd787.cif.gz",
+    "metal": "Cu",
+    "max_metals": 2
+   }
+  },
+  {
+   "id": "mchain",
+   "label": "M–OH 사슬",
+   "formula": "M(OH)(COO)₂",
+   "metals": [
+    "Al",
+    "Cr"
+   ],
+   "links": "끝없는 사슬",
+   "oms": "없음",
+   "about": "금속 팔면체가 OH를 꼭짓점으로 나눠 가지며 끝없이 이어진 사슬이다. 사슬 옆으로 링커가 붙어 마름모꼴 통로를 만든다(MIL-53, CAU-10).",
+   "source": {
+    "cif": "cifs/a88f8427da0a0db63b70a95c.cif.gz",
+    "metal": "Al",
+    "max_metals": 3
+   }
+  },
+  {
+   "id": "m3o",
+   "label": "M₃O 삼량체",
+   "formula": "M₃O(COO)₆",
+   "metals": [
+    "Fe",
+    "Cr",
+    "Al"
+   ],
+   "links": "링커 6개",
+   "oms": "있음 (금속마다 물이나 OH가 붙는 자리)",
+   "about": "금속 3개가 가운데 O 1개를 함께 잡은 삼각형 덩어리다. 링커 6개가 붙어 아주 큰 공동을 만든다(MIL-100, MIL-101). 금속마다 물이나 OH가 붙는 자리가 하나씩 있다.",
+   "source": {
+    "cif": "finalists/MIL100Fe_WS14s.cif",
+    "metal": "Fe",
+    "max_metals": 3
+   }
+  },
+  {
+   "id": "m74",
+   "label": "M₂(dobdc) 사슬 (MOF-74)",
+   "formula": "M₂O₂(COO)₂",
+   "metals": [
+    "Mg",
+    "Ni",
+    "Zn",
+    "Co"
+   ],
+   "links": "끝없는 사슬",
+   "oms": "있음 (금속마다 빈자리 1개)",
+   "about": "금속이 링커의 카복실산 O와 페놀 O에 함께 붙어 나선 사슬을 이룬다. 금속마다 빈자리가 하나씩 있어 열린 금속 자리가 많은데, 물이 이 자리에 붙으면 구조가 쉽게 망가진다.",
+   "source": {
+    "cif": "cifs/b1617d054d14f84d13b45de3.cif.gz",
+    "metal": "Mg",
+    "max_metals": 4
+   }
+  }
+ ],
+ "linkers": [
+  {
+   "id": "bdc",
+   "label": "테레프탈산 (BDC)",
+   "smiles": "OC(=O)c1ccc(cc1)C(=O)O",
+   "arms": "2갈래 (일직선)",
+   "rings": "벤젠 1개",
+   "group": "없음",
+   "about": "가장 흔한 링커다. 벤젠 양 끝의 카복실산(–COOH) 2개가 금속 노드에 붙는다."
+  },
+  {
+   "id": "nh2bdc",
+   "label": "2-아미노테레프탈산 (NH₂-BDC)",
+   "smiles": "OC(=O)c1ccc(C(=O)O)c(N)c1",
+   "arms": "2갈래 (일직선)",
+   "rings": "벤젠 1개",
+   "group": "–NH₂",
+   "about": "BDC에 –NH₂가 붙은 링커다. –NH₂의 H가 인산염의 O와 수소 결합을 할 수 있지만, 기공은 조금 좁아진다."
+  },
+  {
+   "id": "brbdc",
+   "label": "2-브로모테레프탈산 (Br-BDC)",
+   "smiles": "OC(=O)c1ccc(C(=O)O)c(Br)c1",
+   "arms": "2갈래 (일직선)",
+   "rings": "벤젠 1개",
+   "group": "–Br",
+   "about": "BDC에 Br이 붙은 링커다. 크고 무거운 Br이 기공을 좁히고, 물을 밀어내는 성질(소수성)을 키운다."
+  },
+  {
+   "id": "no2bdc",
+   "label": "2-나이트로테레프탈산 (NO₂-BDC)",
+   "smiles": "OC(=O)c1ccc(C(=O)O)c(c1)[N+](=O)[O-]",
+   "arms": "2갈래 (일직선)",
+   "rings": "벤젠 1개",
+   "group": "–NO₂",
+   "about": "BDC에 –NO₂가 붙은 링커다. 전자를 끌어당기는 작용기라 링커와 금속 사이 결합 성질이 바뀐다."
+  },
+  {
+   "id": "so3hbdc",
+   "label": "2-설포테레프탈산 (SO₃H-BDC)",
+   "smiles": "OC(=O)c1ccc(C(=O)O)c(c1)S(=O)(=O)O",
+   "arms": "2갈래 (일직선)",
+   "rings": "벤젠 1개",
+   "group": "–SO₃H",
+   "about": "BDC에 –SO₃H가 붙은 링커다. 물에서 H⁺를 내놓고 음전하를 띠어, 같은 음이온인 인산염을 밀어낸다."
+  },
+  {
+   "id": "bpdc",
+   "label": "바이페닐다이카복실산 (BPDC)",
+   "smiles": "OC(=O)c1ccc(cc1)-c1ccc(cc1)C(=O)O",
+   "arms": "2갈래 (일직선, 김)",
+   "rings": "벤젠 2개",
+   "group": "없음",
+   "about": "벤젠 2개가 이어져 BDC보다 길다. 같은 노드에 붙이면 기공이 커지지만 구조는 덜 단단해진다(UiO-67)."
+  },
+  {
+   "id": "ndc14",
+   "label": "1,4-나프탈렌다이카복실산 (1,4-NDC)",
+   "smiles": "OC(=O)c1ccc(C(=O)O)c2ccccc12",
+   "arms": "2갈래 (일직선)",
+   "rings": "나프탈렌 (고리 2개가 붙음)",
+   "group": "없음",
+   "about": "BDC 옆에 고리가 하나 더 붙은 모양이다. 튀어나온 고리가 기공을 좁힌다."
+  },
+  {
+   "id": "btc",
+   "label": "트라이메스산 (BTC)",
+   "smiles": "OC(=O)c1cc(cc(c1)C(=O)O)C(=O)O",
+   "arms": "3갈래 (120°)",
+   "rings": "벤젠 1개",
+   "group": "없음",
+   "about": "카복실산 3개가 120°씩 벌어진 삼각형 링커다. 큰 공동과 작은 창이 섞인 구조를 만든다(HKUST-1, MIL-100, MOF-808)."
+  },
+  {
+   "id": "btb",
+   "label": "BTB (벤젠트라이벤조산)",
+   "smiles": "OC(=O)c1ccc(cc1)-c1cc(cc(c1)-c1ccc(cc1)C(=O)O)-c1ccc(cc1)C(=O)O",
+   "arms": "3갈래 (120°, 김)",
+   "rings": "벤젠 4개",
+   "group": "없음",
+   "about": "BTC의 세 팔을 벤젠만큼 늘린 큰 삼각형 링커다. 아주 큰 기공을 만든다(MOF-177)."
+  },
+  {
+   "id": "fum",
+   "label": "푸마르산 (fumarate)",
+   "smiles": "OC(=O)/C=C/C(=O)O",
+   "arms": "2갈래 (짧음)",
+   "rings": "없음 (C=C 사슬)",
+   "group": "없음",
+   "about": "고리가 없는 짧은 링커다. 기공이 작고 구조가 촘촘하다(MOF-801)."
+  },
+  {
+   "id": "ipa",
+   "label": "아이소프탈산 (IPA, 1,3-BDC)",
+   "smiles": "OC(=O)c1cccc(c1)C(=O)O",
+   "arms": "2갈래 (120°로 굽음)",
+   "rings": "벤젠 1개",
+   "group": "없음",
+   "about": "카복실산이 벤젠의 1, 3번 자리에 있어서 굽은 링커다. BDC와 원자 구성은 같지만 모양이 달라서 나선 사슬과 좁은 통로를 만든다(CAU-10)."
+  },
+  {
+   "id": "dobdc",
+   "label": "다이옥시도테레프탈산 (dobdc)",
+   "smiles": "OC(=O)c1cc(O)c(cc1O)C(=O)O",
+   "arms": "2갈래 + 페놀 O 2개",
+   "rings": "벤젠 1개",
+   "group": "–OH 2개",
+   "about": "카복실산 2개와 –OH 2개가 모두 금속에 붙어 금속 사슬을 만든다(MOF-74)."
+  },
+  {
+   "id": "mim",
+   "label": "2-메틸이미다졸 (mIm)",
+   "smiles": "Cc1ncc[nH]1",
+   "arms": "2갈래 (N 2개)",
+   "rings": "5원 고리 1개",
+   "group": "–CH₃",
+   "about": "고리의 N 2개가 Zn 두 개를 이어 준다. 카복실산이 없는 링커다(ZIF-8)."
+  },
+  {
+   "id": "bim",
+   "label": "벤즈이미다졸 (bIm)",
+   "smiles": "c1ccc2[nH]cnc2c1",
+   "arms": "2갈래 (N 2개)",
+   "rings": "5원 + 6원 고리",
+   "group": "없음",
+   "about": "이미다졸에 벤젠이 붙어 mIm보다 크다. 통로가 더 좁아진다(ZIF-7, ZIF-11)."
+  },
+  {
+   "id": "ica",
+   "label": "이미다졸-2-카복스알데하이드 (ICA)",
+   "smiles": "O=Cc1ncc[nH]1",
+   "arms": "2갈래 (N 2개)",
+   "rings": "5원 고리 1개",
+   "group": "–CHO",
+   "about": "이미다졸에 알데하이드(–CHO)가 붙은 링커다(ZIF-90)."
+  },
+  {
+   "id": "tbapy",
+   "label": "TBAPy (파이렌 4갈래)",
+   "smiles": "OC(=O)c5ccc(cc5)-c1cc(-c5ccc(cc5)C(=O)O)c2ccc3c(-c5ccc(cc5)C(=O)O)cc(-c5ccc(cc5)C(=O)O)c4ccc1c2c34",
+   "arms": "4갈래",
+   "rings": "파이렌 + 벤젠 4개",
+   "group": "없음",
+   "about": "고리 4개가 붙은 파이렌 가운데에서 벤조산 4개가 뻗은 큰 링커다. 큰 육각형 통로를 만든다(NU-1000)."
+  },
+  {
+   "id": "ettc",
+   "label": "ETTC (H₄ETTC)",
+   "smiles": "OC(=O)c1ccc(cc1)-c1ccc(cc1)C(=C(c1ccc(cc1)-c1ccc(cc1)C(=O)O)c1ccc(cc1)-c1ccc(cc1)C(=O)O)c1ccc(cc1)-c1ccc(cc1)C(=O)O",
+   "arms": "4갈래 (김)",
+   "rings": "에틸렌 중심 + 벤젠 8개",
+   "group": "없음",
+   "about": "에틸렌(C=C) 가운데에서 바이페닐 4개가 뻗은 큰 링커다. 아주 큰 기공을 만든다(PCN-128W)."
+  },
+  {
+   "id": "tdc",
+   "label": "싸이오펜다이카복실산 (TDC)",
+   "smiles": "OC(=O)c1ccc(s1)C(=O)O",
+   "arms": "2갈래 (굽음)",
+   "rings": "싸이오펜 (S가 든 5원 고리)",
+   "group": "없음",
+   "about": "굽은 링커라 같은 Zr₆ 노드와 만나도 연결 방식이 여러 가지로 나온다(DUT-67, DUT-68, DUT-69)."
+  }
+ ],
+ "mofs": [
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "bdc",
+   "records": [
+    {
+     "id": "ws24:RUBTAK02",
+     "name": "UiO-66"
+    }
+   ],
+   "structure": "variant:UiO-66"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "nh2bdc",
+   "records": [
+    {
+     "id": "ws24:UiO-66-NH2",
+     "name": "UiO-66-NH₂"
+    }
+   ],
+   "structure": "variant:UiO-66-NH2"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "brbdc",
+   "records": [
+    {
+     "id": "ws24:UiO-66-Br",
+     "name": "UiO-66-Br"
+    }
+   ],
+   "structure": "variant:UiO-66-Br"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "no2bdc",
+   "records": [
+    {
+     "id": "ws24:UiO-66-NO2",
+     "name": "UiO-66-NO₂"
+    }
+   ],
+   "structure": "variant:UiO-66-NO2"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "so3hbdc",
+   "records": [
+    {
+     "id": "ws24:UiO-66-SO3H",
+     "name": "UiO-66-SO₃H"
+    }
+   ],
+   "structure": "variant:UiO-66-SO3H"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "bpdc",
+   "records": [
+    {
+     "id": "ws24:UiO-67",
+     "name": "UiO-67"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "ndc14",
+   "records": [
+    {
+     "id": "ws24:UiO-1,4-NDC",
+     "name": "UiO-66-1,4-NDC"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "btc",
+   "records": [
+    {
+     "id": "ws24:BOHWUS",
+     "name": "MOF-808"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "fum",
+   "records": [
+    {
+     "id": "ws24:MOF-801-SC",
+     "name": "MOF-801 (단결정 기록)"
+    },
+    {
+     "id": "ws24:MOF-801-P",
+     "name": "MOF-801 (가루 기록)"
+    }
+   ],
+   "structure": "variant:MOF-801-SC"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "tbapy",
+   "records": [
+    {
+     "id": "ws24:NU-1000",
+     "name": "NU-1000"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "ettc",
+   "records": [
+    {
+     "id": "ws24:BUNKUS",
+     "name": "PCN-128W"
+    }
+   ],
+   "structure": "pipeline:BUNKUS"
+  },
+  {
+   "node": "zr6",
+   "metal": "Zr",
+   "linker": "tdc",
+   "records": [
+    {
+     "id": "ws24:dut-67-zr",
+     "name": "DUT-67(Zr)"
+    },
+    {
+     "id": "ws24:dut-68-zr",
+     "name": "DUT-68(Zr)"
+    },
+    {
+     "id": "ws24:dut-69-zr",
+     "name": "DUT-69(Zr)"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zn4o",
+   "metal": "Zn",
+   "linker": "bdc",
+   "records": [
+    {
+     "id": "ws24:IRMOF-1-38",
+     "name": "MOF-5 (IRMOF-1)"
+    }
+   ],
+   "structure": "core:e096826bf8b3bfc31cf9972c"
+  },
+  {
+   "node": "zn4o",
+   "metal": "Zn",
+   "linker": "nh2bdc",
+   "records": [
+    {
+     "id": "ws24:IRMOF-3-42",
+     "name": "IRMOF-3"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zn4o",
+   "metal": "Zn",
+   "linker": "btb",
+   "records": [
+    {
+     "id": "ws24:MOF-177",
+     "name": "MOF-177"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zntet",
+   "metal": "Zn",
+   "linker": "mim",
+   "records": [
+    {
+     "id": "ws24:ZIF-8",
+     "name": "ZIF-8"
+    }
+   ],
+   "structure": "core:eb18ecdf51b8344bcac1cfc7"
+  },
+  {
+   "node": "zntet",
+   "metal": "Zn",
+   "linker": "bim",
+   "records": [
+    {
+     "id": "ws24:ZIF-7",
+     "name": "ZIF-7"
+    },
+    {
+     "id": "ws24:ZIF-11",
+     "name": "ZIF-11"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "zntet",
+   "metal": "Zn",
+   "linker": "ica",
+   "records": [
+    {
+     "id": "ws24:ZIF-90",
+     "name": "ZIF-90"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "cupw",
+   "metal": "Cu",
+   "linker": "btc",
+   "records": [
+    {
+     "id": "ws24:HKUST-1",
+     "name": "HKUST-1"
+    }
+   ],
+   "structure": "core:4ed78954ee0b7dd4afbcd787"
+  },
+  {
+   "node": "mchain",
+   "metal": "Al",
+   "linker": "bdc",
+   "records": [
+    {
+     "id": "ws24:mil-53-al",
+     "name": "MIL-53(Al)"
+    }
+   ],
+   "structure": "core:a88f8427da0a0db63b70a95c"
+  },
+  {
+   "node": "mchain",
+   "metal": "Cr",
+   "linker": "bdc",
+   "records": [
+    {
+     "id": "ws24:mil-53-cr",
+     "name": "MIL-53(Cr)"
+    }
+   ],
+   "structure": "core:6d280856cc57a15428bfbfa8"
+  },
+  {
+   "node": "mchain",
+   "metal": "Al",
+   "linker": "ipa",
+   "records": [
+    {
+     "id": "ws24:CAU-10",
+     "name": "CAU-10"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m3o",
+   "metal": "Fe",
+   "linker": "btc",
+   "records": [
+    {
+     "id": "ws24:mil-100-fe",
+     "name": "MIL-100(Fe)"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m3o",
+   "metal": "Cr",
+   "linker": "btc",
+   "records": [
+    {
+     "id": "ws24:mil-100-cr",
+     "name": "MIL-100(Cr)"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m3o",
+   "metal": "Al",
+   "linker": "btc",
+   "records": [
+    {
+     "id": "ws24:mil-100-al",
+     "name": "MIL-100(Al)"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m3o",
+   "metal": "Cr",
+   "linker": "bdc",
+   "records": [
+    {
+     "id": "ws24:mil-101-cr-a",
+     "name": "MIL-101(Cr)"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m3o",
+   "metal": "Cr",
+   "linker": "nh2bdc",
+   "records": [
+    {
+     "id": "ws24:mil-101-nh2",
+     "name": "MIL-101(Cr)-NH₂"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m3o",
+   "metal": "Cr",
+   "linker": "no2bdc",
+   "records": [
+    {
+     "id": "ws24:mil-101-no2",
+     "name": "MIL-101(Cr)-NO₂"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m3o",
+   "metal": "Cr",
+   "linker": "so3hbdc",
+   "records": [
+    {
+     "id": "ws24:mil-101-so3h",
+     "name": "MIL-101(Cr)-SO₃H"
+    }
+   ],
+   "structure": null
+  },
+  {
+   "node": "m74",
+   "metal": "Mg",
+   "linker": "dobdc",
+   "records": [
+    {
+     "id": "ws24:Mg-MOF-74",
+     "name": "Mg-MOF-74"
+    }
+   ],
+   "structure": "core:b1617d054d14f84d13b45de3"
+  },
+  {
+   "node": "m74",
+   "metal": "Ni",
+   "linker": "dobdc",
+   "records": [
+    {
+     "id": "ws24:Ni-MOF-74",
+     "name": "Ni-MOF-74"
+    }
+   ],
+   "structure": "core:922436151d7acc38c18bbec2"
+  },
+  {
+   "node": "m74",
+   "metal": "Zn",
+   "linker": "dobdc",
+   "records": [
+    {
+     "id": "ws24:Zn-MOF-74",
+     "name": "Zn-MOF-74"
+    }
+   ],
+   "structure": "core:e98988f471305512e1e83bf5"
+  },
+  {
+   "node": "m74",
+   "metal": "Co",
+   "linker": "dobdc",
+   "records": [
+    {
+     "id": "ws24:Co-DOBDC",
+     "name": "Co-MOF-74"
+    }
+   ],
+   "structure": "core:a86baa45e6746a814c995214"
+  }
+ ]
+}

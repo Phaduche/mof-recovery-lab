@@ -58,7 +58,16 @@ def test_top_menu_is_the_pipeline():
     assert list(at.session_state['step_pages']) == STEPS
 
 def test_predict_page_scores_the_example():
+    """Default node + linker (Zr₆ + BDC) finds UiO-66 and shows its score; every catalog MOF is a real
+    stage-A row with the node's metal, and every node / linker drawing exists."""
+    from moflab import builder, data
+    A = data.stage_a().set_index('id')
+    cat = builder.catalog()
+    for m in cat['mofs']:
+        for rec in m['records']:
+            assert A.loc[rec['id'], 'metal'] == m['metal'], rec
+    assert all((data.DATA / 'predict/nodes' / f"{n['id']}__{mt}.sdf").exists() for n in cat['nodes'] for mt in n['metals'])
+    assert all((data.DATA / 'predict/linkers' / f"{l['id']}.sdf").exists() for l in cat['linkers'])
     at = AppTest.from_file(str(ROOT / 'views/predict.py'), default_timeout=60).run()
-    at.button[0].click().run()
     assert not at.exception, [e.message for e in at.exception]
     assert any('총점' in m.label for m in at.metric)

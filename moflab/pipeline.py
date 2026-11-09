@@ -44,21 +44,33 @@ def _table(table, metal, lanthanide, alkali, default):
 def _num(x, default):
     return default if x is None or (isinstance(x, float) and math.isnan(x)) else float(x)
 
+ACCESS_PLD = 4.8                    # Å; narrower windows let phosphate reach only outer / defect sites
+
+def raw_parts(water_prob, metal, pld_A=None, gsa_m2_g=None, open_metal_site=None, group_effect='0',
+              thermal_C=None, base_stable=None):
+    """Every factor that goes into the raw capture / desorption / reuse values (used to explain a score)."""
+    metals = _metals(metal)
+    pld = _num(pld_A, 0.0)
+    return {
+        'p': _num(water_prob, 0.0), 'pld': pld, 'gsa': _num(gsa_m2_g, 0.0),
+        'affinity': max((_table(AFFINITY, m, .9, .05, .3) for m in metals), default=.3),
+        'reversibility': min((_table(REVERSIBILITY, m, .35, .9, .6) for m in metals), default=.6),
+        'surface': min(1.0, math.log10(1 + _num(gsa_m2_g, 0.0)) / math.log10(1 + 4000)),
+        'access': 1.0 if pld >= ACCESS_PLD else 0.6,
+        'group': GROUP_CAPTURE.get(group_effect or '0', 0.0),
+        'oms': 0.1 if open_metal_site is True else 0.0,
+        'pore': 0.7 + 0.3 * min(1.0, pld / 8),
+        'thermal': min(1.0, max(0.0, (_num(thermal_C, 350.0) - 250) / 250)),
+        'base': 1.0 if base_stable is True else (0.0 if base_stable is False else 0.5),
+    }
+
 def raw_scores(water_prob, metal, pld_A=None, gsa_m2_g=None, open_metal_site=None, group_effect='0',
                thermal_C=None, base_stable=None):
     """Raw (unscaled) capture / desorption / reuse values for one MOF."""
-    metals = _metals(metal)
-    affinity = max((_table(AFFINITY, m, .9, .05, .3) for m in metals), default=.3)
-    reversibility = min((_table(REVERSIBILITY, m, .35, .9, .6) for m in metals), default=.6)
-    gsa, pld, p = _num(gsa_m2_g, 0.0), _num(pld_A, 0.0), _num(water_prob, 0.0)
-    surface = min(1.0, math.log10(1 + gsa) / math.log10(1 + 4000))
-    access = 1.0 if pld >= 4.8 else 0.6          # small windows: surface / defect sites only
-    capture = affinity * (0.6 + 0.4 * surface) * access + GROUP_CAPTURE.get(group_effect or '0', 0.0) \
-        + (0.1 if open_metal_site is True else 0.0)
-    desorption = reversibility * (0.7 + 0.3 * min(1.0, pld / 8))
-    thermal = min(1.0, max(0.0, (_num(thermal_C, 350.0) - 250) / 250))
-    base = 1.0 if base_stable is True else (0.0 if base_stable is False else 0.5)
-    reuse = 0.6 * p + 0.25 * thermal + 0.15 * base
+    f = raw_parts(water_prob, metal, pld_A, gsa_m2_g, open_metal_site, group_effect, thermal_C, base_stable)
+    capture = f['affinity'] * (0.6 + 0.4 * f['surface']) * f['access'] + f['group'] + f['oms']
+    desorption = f['reversibility'] * f['pore']
+    reuse = 0.6 * f['p'] + 0.25 * f['thermal'] + 0.15 * f['base']
     return {'capture_raw': capture, 'desorption_raw': desorption, 'reuse_raw': reuse}
 
 def reference_stats(frame):
